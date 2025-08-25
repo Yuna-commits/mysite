@@ -34,7 +34,7 @@ public class UserServlet extends HttpServlet {
 			new UserDao().insert(vo);
 
 			// Response
-			// redirect to /mysite02/user?a=joinsuccess
+			// redirect to localhost/mysite02/user?a=joinsuccess
 			response.sendRedirect(request.getContextPath() + "/user?a=joinsuccess");
 		} else if ("joinsuccess".equals(action)) {
 			request.getRequestDispatcher("/WEB-INF/views/user/joinsuccess.jsp").forward(request, response);
