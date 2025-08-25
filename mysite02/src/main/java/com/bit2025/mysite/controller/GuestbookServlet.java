@@ -6,6 +6,7 @@ import java.util.List;
 import com.bit2025.mysite.dao.GuestbookDao;
 import com.bit2025.mysite.vo.GuestbookVo;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,8 @@ public class GuestbookServlet extends HttpServlet {
 			// redirect to localhost/mysite02/guestbook
 			response.sendRedirect(request.getContextPath()+"/guestbook");
 		} else if("deleteform".equals(action)) {
-			request.getRequestDispatcher("/WEB-INF/views/guestbook/deleteform.jsp").forward(request, response);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/guestbook/deleteform.jsp");
+			rd.forward(request, response);
 		} else if("delete".equals(action)) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			String password = request.getParameter("password");
@@ -44,9 +46,10 @@ public class GuestbookServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath()+"/guestbook");
 		} else {// Default action
 			List<GuestbookVo> list = new GuestbookDao().findAll();
-			
 			request.setAttribute("list", list);
-			request.getRequestDispatcher("/WEB-INF/views/guestbook/list.jsp").forward(request, response);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/guestbook/list.jsp");
+			rd.forward(request, response);
 		}
 	}
 

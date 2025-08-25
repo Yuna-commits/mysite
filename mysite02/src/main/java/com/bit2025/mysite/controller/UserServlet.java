@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.bit2025.mysite.dao.UserDao;
 import com.bit2025.mysite.vo.UserVo;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,8 @@ public class UserServlet extends HttpServlet {
 		String action = request.getParameter("a");
 
 		if ("joinform".equals(action)) {
-			request.getRequestDispatcher("/WEB-INF/views/user/joinform.jsp").forward(request, response);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/joinform.jsp");
+			rd.forward(request, response);
 		} else if ("join".equals(action)) {
 			String name = request.getParameter("name");
 			String email = request.getParameter("email");
@@ -37,9 +39,11 @@ public class UserServlet extends HttpServlet {
 			// redirect to localhost/mysite02/user?a=joinsuccess
 			response.sendRedirect(request.getContextPath() + "/user?a=joinsuccess");
 		} else if ("joinsuccess".equals(action)) {
-			request.getRequestDispatcher("/WEB-INF/views/user/joinsuccess.jsp").forward(request, response);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/joinsuccess.jsp");
+			rd.forward(request, response);
 		} else if ("loginform".equals(action)) {
-			request.getRequestDispatcher("/WEB-INF/views/user/loginform.jsp").forward(request, response);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/loginform.jsp");
+			rd.forward(request, response);
 		} else {
 			response.sendRedirect(request.getContextPath());// redirect to /main
 		}
