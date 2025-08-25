@@ -24,7 +24,7 @@ public class UserServlet extends HttpServlet {
 			String email = request.getParameter("email");
 			String password = request.getParameter("password");
 			String gender = request.getParameter("gender");
-
+			
 			UserVo vo = new UserVo();
 			vo.setName(name);
 			vo.setEmail(email);
@@ -32,15 +32,16 @@ public class UserServlet extends HttpServlet {
 			vo.setGender(gender);
 
 			new UserDao().insert(vo);
-			
+
 			// Response
+			// redirect to /mysite02/user?a=joinsuccess
 			response.sendRedirect(request.getContextPath() + "/user?a=joinsuccess");
 		} else if ("joinsuccess".equals(action)) {
 			request.getRequestDispatcher("/WEB-INF/views/user/joinsuccess.jsp").forward(request, response);
 		} else if ("loginform".equals(action)) {
 			request.getRequestDispatcher("/WEB-INF/views/user/loginform.jsp").forward(request, response);
-		} else {// main으로 리다이렉션
-			response.sendRedirect(request.getContextPath());
+		} else {
+			response.sendRedirect(request.getContextPath());// redirect to /main
 		}
 	}
 
