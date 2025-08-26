@@ -1,5 +1,9 @@
+<%@ page import="com.bit2025.mysite.vo.UserVo" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	UserVo authUser = (UserVo)session.getAttribute("authUser");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,8 +18,10 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
+					<% if (authUser != null) { %>
 					<img id="profile" src="<%=request.getContextPath() %>/assets/images/dooly.jpg" style="width:200px">
-					<h2>안녕하세요.<br>MySite에 오신 것을 환영합니다.</h2>
+					<h2>안녕하세요.<br><%=authUser.getName() %>의 MySite에 오신 것을 환영합니다.</h2>
+					<% } %>
 					<p>
 						이 사이트는  웹 프로그래밍 실습과제 예제 사이트입니다.<br>
 						메뉴는  사이트 소개, 방명록, 게시판이 있구요.<br>

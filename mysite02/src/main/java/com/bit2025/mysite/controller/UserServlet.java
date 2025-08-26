@@ -65,6 +65,84 @@ public class UserServlet extends HttpServlet {
 
 			// redirect to localhost/mysite02
 			response.sendRedirect(request.getContextPath());
+		} else if ("logout".equals(action)) {
+			HttpSession session = request.getSession(true);
+
+			if (session != null) {
+				// 로그아웃 처리
+				session.removeAttribute("authUser");
+				// JSESSIONID 변경
+				session.invalidate();
+			}
+
+			// redirect to localhost/mysite02
+			response.sendRedirect(request.getContextPath());
+		} else if ("updateform".equals(action)) {
+			/**
+			 * Access Control
+			 */
+			HttpSession session = request.getSession();
+			if (session == null) {// 권한이 없는 사용자(회원x)
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+			if (authUser == null) {
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			/**
+			 * updateform에 회원정보 표시
+			 */
+			Long id = authUser.getId();
+			UserVo userVo = new UserDao().findById(id);	
+
+			session.setAttribute("userVo", userVo);
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/updateform.jsp");
+			rd.forward(request, response);
+		} else if ("update".equals(action)) {
+			/**
+			 * Access Control
+			 */
+			HttpSession session = request.getSession();
+			if (session == null) {// 권한이 없는 사용자(회원x)
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+			if (authUser == null) {
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			/**
+			 * 회원정보수정
+			 */
+			String name = request.getParameter("name");
+			String password = request.getParameter("password");
+			String gender = request.getParameter("gender");
+			
+			UserVo vo = new UserVo();
+			vo.setId(authUser.getId());
+			vo.setName(name);
+			vo.setPassword(password);
+			vo.setGender(gender);
+
+			// password 변경 x -> password is blank
+			if (password.isBlank()) {
+				new UserDao().update(vo);
+			} else {
+				new UserDao().updateAll(vo);
+			}
+			
+			// authUser를 수정한 내용으로 변경
+			session.setAttribute("authUser", new UserDao().findById(vo.getId()));
+			
+			// Redirect to localhost/mysite02/user?a=updateform
+			response.sendRedirect(request.getContextPath() + "/user?a=updateform");
 		} else {
 			response.sendRedirect(request.getContextPath());// redirect to /main
 		}

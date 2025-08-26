@@ -6,7 +6,13 @@
 %>
 <div id="navigation">
 	<ul>
-		<li><a href="<%=request.getContextPath() %>"><%=authUser.getName() %></a></li>
+		<li>
+		<% if (authUser != null) { %>
+		<a href="<%=request.getContextPath() %>"><%=authUser.getName() %></a>
+		<% } else { %>
+		<a href="<%=request.getContextPath() %>/user?a=loginform">익명</a>
+		<% } %>
+		</li>
 		<li><a href="<%=request.getContextPath() %>/guestbook">방명록</a></li>
 		<li><a href="<%=request.getContextPath() %>/board">게시판</a></li>
 	</ul>

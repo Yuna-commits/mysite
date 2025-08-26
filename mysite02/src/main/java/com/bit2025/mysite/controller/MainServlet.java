@@ -10,12 +10,23 @@ import java.io.IOException;
 public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	public void init() throws ServletException {
+		String config = getServletConfig().getInitParameter("config");
+
+		// print : MainServlet.init() called: /WEB-INF/servlet-context.xml
+		System.out.println("MainServlet.init() called: " + config);
+		super.init();
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/main/index.jsp");
 		rd.forward(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 
