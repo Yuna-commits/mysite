@@ -38,11 +38,16 @@
 				
 				<!-- 방명록 리스트 출력 -->
 				<ul>
-					<%for(GuestbookVo vo : list){%>
+					<%
+						int index = 0;
+						int count = list.size();
+						
+						for(GuestbookVo vo : list){
+					%>
 					<li>
 						<table>
 							<tr>
-								<td>[<%=vo.getId() %>]</td>
+								<td>[<%=count - index++ %>]</td>
 								<td><%=vo.getName() %></td>
 								<td><%=vo.getRegDate() %></td>
 								<td><a href="<%=request.getContextPath()%>/guestbook?a=deleteform&id=<%=vo.getId() %>">삭제</a></td>
