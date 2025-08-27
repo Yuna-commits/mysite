@@ -108,34 +108,25 @@ public class UserDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("update user set name = ?, gender = ? where id = ?");
+			PreparedStatement pstmt1 = conn.prepareStatement("update user set name = ?, gender = ? where id = ?");
+			PreparedStatement pstmt2 = conn.prepareStatement("update user set name = ?, password = password(?), gender = ? where id = ?");
 		) {
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getGender());
-			pstmt.setLong(3, vo.getId());
+			// password 변경 x -> password is blank	
+			if(vo.getPassword().isBlank()) {	
+				pstmt1.setString(1, vo.getName());
+				pstmt1.setString(2, vo.getGender());
+				pstmt1.setLong(3, vo.getId());
 				
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("DB 연결에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
-
-		return result;
-	}
-	
-	public int updateAll(UserVo vo) {
-		int result = 0;
-
-		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("update user set name = ?, password = password(?), gender = ? where id = ?");
-		) {
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getPassword());
-			pstmt.setString(3, vo.getGender());
-			pstmt.setLong(4, vo.getId());
+				result = pstmt1.executeUpdate();
+			} else {
+				pstmt2.setString(1, vo.getName());
+				pstmt2.setString(2, vo.getPassword());
+				pstmt2.setString(3, vo.getGender());
+				pstmt2.setLong(4, vo.getId());
+				
+				result = pstmt2.executeUpdate();
+			}
 			
-			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());

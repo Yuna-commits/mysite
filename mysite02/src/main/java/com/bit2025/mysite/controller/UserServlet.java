@@ -49,8 +49,9 @@ public class UserServlet extends HttpServlet {
 			String email = request.getParameter("email");
 			String password = request.getParameter("password");
 
+			// 로그인 실패 -> authUser == null
+			// 다시 loginform으로, 입력한 email 브라우저에 저장
 			UserVo authUser = new UserDao().findByEmailAndPassword(email, password);
-			// 로그인 실패 -> 다시 loginform으로, 입력한 email 브라우저에 저장
 			if (authUser == null) {
 				request.setAttribute("email", email);
 				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/loginform.jsp");
@@ -100,6 +101,7 @@ public class UserServlet extends HttpServlet {
 			UserVo userVo = new UserDao().findById(id);	
 
 			session.setAttribute("userVo", userVo);
+			
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/updateform.jsp");
 			rd.forward(request, response);
 		} else if ("update".equals(action)) {
@@ -131,12 +133,7 @@ public class UserServlet extends HttpServlet {
 			vo.setPassword(password);
 			vo.setGender(gender);
 
-			// password 변경 x -> password is blank
-			if (password.isBlank()) {
-				new UserDao().update(vo);
-			} else {
-				new UserDao().updateAll(vo);
-			}
+			new UserDao().update(vo);
 			
 			// authUser를 수정한 내용으로 변경
 			session.setAttribute("authUser", new UserDao().findById(vo.getId()));

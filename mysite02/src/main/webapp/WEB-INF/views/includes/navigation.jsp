@@ -1,19 +1,18 @@
-<%@ page import="com.bit2025.mysite.vo.UserVo" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%
-	UserVo authUser = (UserVo)session.getAttribute("authUser");
-%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="navigation">
 	<ul>
 		<li>
-		<% if (authUser != null) { %>
-		<a href="<%=request.getContextPath() %>"><%=authUser.getName() %></a>
-		<% } else { %>
-		<a href="<%=request.getContextPath() %>/user?a=loginform">익명</a>
-		<% } %>
+		<c:choose>
+			<c:when test='${not empty authUser }'>
+				<a href="${pageContext.request.contextPath }">${authUser.name }</a>
+			</c:when>
+			<c:otherwise>
+				<a href="${pageContext.request.contextPath }/user?a=loginform">익명</a>
+			</c:otherwise>
+		</c:choose>
 		</li>
-		<li><a href="<%=request.getContextPath() %>/guestbook">방명록</a></li>
-		<li><a href="<%=request.getContextPath() %>/board">게시판</a></li>
+		<li><a href="${pageContext.request.contextPath }/guestbook">방명록</a></li>
+		<li><a href="${pageContext.request.contextPath }/board">게시판</a></li>
 	</ul>
 </div>
