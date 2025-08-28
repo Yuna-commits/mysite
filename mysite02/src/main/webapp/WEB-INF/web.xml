@@ -35,6 +35,11 @@
 		<servlet-name>GuestbookServlet</servlet-name>
 		<servlet-class>com.bit2025.mysite.controller.GuestbookServlet</servlet-class>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>BoardServlet</servlet-name>
+		<servlet-class>com.bit2025.mysite.controller.BoardServlet</servlet-class>
+	</servlet>
 
 	<!-- Servlet Mappings -->
 	<servlet-mapping>
@@ -54,6 +59,11 @@
 	<servlet-mapping>
 		<servlet-name>GuestbookServlet</servlet-name>
 		<url-pattern>/guestbook</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>BoardServlet</servlet-name>
+		<url-pattern>/board</url-pattern>
 	</servlet-mapping>
 	
 	<!-- Common Errors -->

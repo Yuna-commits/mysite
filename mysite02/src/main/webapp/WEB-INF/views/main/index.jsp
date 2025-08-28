@@ -16,7 +16,7 @@
 			<div id="content">
 				<div id="site-introduction">
 				
-					<c:if test='${not empty authUser }'>
+					<c:if test="${not empty authUser }">
 					<img id="profile" src="${pageContext.request.contextPath }/assets/images/dooly.jpg" style="width:200px">
 					<h2>안녕하세요.<br>${authUser.name }의 MySite에 오신 것을 환영합니다.</h2>
 					</c:if>

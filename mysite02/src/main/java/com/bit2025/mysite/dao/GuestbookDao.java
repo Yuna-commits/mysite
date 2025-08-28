@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.bit2025.mysite.vo.GuestbookVo;
@@ -41,7 +42,7 @@ public class GuestbookDao {
 				Long id = rs.getLong(1);
 				String name = rs.getString(2);
 				String message = rs.getString(3);
-				String regDate = rs.getString(4);
+				Date regDate = rs.getDate(4);
 
 				GuestbookVo vo = new GuestbookVo();
 				vo.setId(id);
@@ -85,7 +86,8 @@ public class GuestbookDao {
 			String url = "jdbc:mariadb://192.168.0.181:3306/webdb";
 			conn = DriverManager.getConnection(url, "webdb", "webdb");
 		} catch (ClassNotFoundException e) {
-			System.err.println("Driver Class Not Found");
+			System.err.println("드라이버 로딩에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
 		}
 
 		return conn;

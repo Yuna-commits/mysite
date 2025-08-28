@@ -1,11 +1,13 @@
 package com.bit2025.mysite.vo;
 
+import java.util.Date;
+
 public class GuestbookVo {
 	private Long id;
 	private String name;
 	private String password;
 	private String message;
-	private String regDate;
+	private Date regDate;
 
 	public Long getId() {
 		return id;
@@ -39,11 +41,11 @@ public class GuestbookVo {
 		this.message = message;
 	}
 
-	public String getRegDate() {
+	public Date getRegDate() {
 		return regDate;
 	}
 
-	public void setRegDate(String regDate) {
+	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
 
