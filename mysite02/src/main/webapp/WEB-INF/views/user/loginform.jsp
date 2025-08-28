@@ -13,7 +13,7 @@
 		<div id="content">
 			<div id="user">
 				<form id="login-form" name="loginform" method="post"
-					action="${pageContext.request.contextPath }/user?a=login">
+					action="${pageContext.request.contextPath }/user">
 					<input type="hidden" name="a" value="login">
 					
 					<!-- 데이터 입력 -->
