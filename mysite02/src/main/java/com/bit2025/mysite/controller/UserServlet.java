@@ -64,8 +64,15 @@ public class UserServlet extends HttpServlet {
 			HttpSession session = request.getSession(true);
 			session.setAttribute("authUser", authUser);
 
-			// redirect to localhost/mysite02
-			response.sendRedirect(request.getContextPath());
+			// redirectUri != null -> 다른 페이지로부터 리다이렉트 되어 온 경우
+			String redirectUri = (String) session.getAttribute("redirectUri");
+			if (redirectUri != null) {
+				session.removeAttribute("redirectUri");
+				response.sendRedirect(redirectUri);
+			} else {
+				// default main
+				response.sendRedirect(request.getContextPath());
+			}
 		} else if ("logout".equals(action)) {
 			HttpSession session = request.getSession(true);
 
@@ -80,53 +87,53 @@ public class UserServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath());
 		} else if ("updateform".equals(action)) {
 			/**
-			 * Access Control
+			 * Access Control updateform -> login -> updateform
 			 */
-			HttpSession session = request.getSession();
-			if (session == null) {// 권한이 없는 사용자(회원x)
-				response.sendRedirect(request.getContextPath());
+			HttpSession session = request.getSession(false);
+			if (session == null) {// 로그인 세션이 없는 사용자
+				redirectToLogin(request, response);
 				return;
 			}
 
 			UserVo authUser = (UserVo) session.getAttribute("authUser");
-			if (authUser == null) {
-				response.sendRedirect(request.getContextPath());
+			if (authUser == null) {// 로그인 안 한 사용자
+				redirectToLogin(request, response);
 				return;
 			}
-
+			
 			/**
 			 * updateform에 회원정보 표시
 			 */
 			Long id = authUser.getId();
-			UserVo userVo = new UserDao().findById(id);	
+			UserVo userVo = new UserDao().findById(id);
 
 			session.setAttribute("userVo", userVo);
-			
+
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/user/updateform.jsp");
 			rd.forward(request, response);
 		} else if ("update".equals(action)) {
 			/**
 			 * Access Control
 			 */
-			HttpSession session = request.getSession();
-			if (session == null) {// 권한이 없는 사용자(회원x)
-				response.sendRedirect(request.getContextPath());
+			HttpSession session = request.getSession(false);
+			if (session == null) {// 로그인 세션이 없는 사용자
+				redirectToLogin(request, response);
 				return;
 			}
 
 			UserVo authUser = (UserVo) session.getAttribute("authUser");
-			if (authUser == null) {
-				response.sendRedirect(request.getContextPath());
+			if (authUser == null) {// 로그인 안 한 사용자
+				redirectToLogin(request, response);
 				return;
 			}
-
+			
 			/**
 			 * 회원정보수정
 			 */
 			String name = request.getParameter("name");
 			String password = request.getParameter("password");
 			String gender = request.getParameter("gender");
-			
+
 			UserVo vo = new UserVo();
 			vo.setId(authUser.getId());
 			vo.setName(name);
@@ -134,15 +141,22 @@ public class UserServlet extends HttpServlet {
 			vo.setGender(gender);
 
 			new UserDao().update(vo);
-			
+
 			// authUser를 수정한 내용으로 변경
 			session.setAttribute("authUser", new UserDao().findById(vo.getId()));
-			
+
 			// Redirect to localhost/mysite02/user?a=updateform
 			response.sendRedirect(request.getContextPath() + "/user?a=updateform");
 		} else {
 			response.sendRedirect(request.getContextPath());// redirect to /main
 		}
+	}
+
+	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String targetUrl = request.getContextPath() + "/user?a=updateform";
+		request.getSession(true).setAttribute("redirectUri", targetUrl);
+
+		response.sendRedirect(request.getContextPath() + "/user?a=loginform");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -10,43 +10,72 @@ import java.util.Date;
 import java.util.List;
 
 import com.bit2025.mysite.vo.BoardVo;
+import com.bit2025.mysite.vo.NodeVo;
 
 public class BoardDao {
 
-	// 전체 게시글 리스트 출력
-	public List<BoardVo> findAll() {
-		List<BoardVo> result = new ArrayList<BoardVo>();
+	public int insert(BoardVo vo) {
+		int result = 0;
+
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+					"insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
+							+ "from board as sub_board), 0)+1), 1, 0)");
+		) {
+			// Parameter Binding
+			pstmt.setLong(1, vo.getUserId());
+			pstmt.setString(2, vo.getTitle());
+			pstmt.setString(3, vo.getContent());
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
+	
+	public int insertReply(BoardVo vo, NodeVo nVo) {
+		int result = 0;
+
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+					"insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
+		) {
+			// Parameter Binding
+			pstmt.setLong(1, vo.getUserId());
+			pstmt.setString(2, vo.getTitle());
+			pstmt.setString(3, vo.getContent());
+
+			pstmt.setInt(4, nVo.getgNo());
+			pstmt.setInt(5, nVo.getoNo() + 1);
+			pstmt.setInt(6, nVo.getDepth() + 1);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
+	
+	public int update(BoardVo vo) {
+		int result = 0;
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("select board.id, user.name, title, contents, hit, reg_date, g_no, o_no, depth from board join user on board.user_id = user.id order by g_no desc, o_no asc");
-			ResultSet rs = pstmt.executeQuery();
-		){
-			while(rs.next()) {
-				Long id = rs.getLong(1);
-				String userName = rs.getString(2);
-				String title = rs.getString(3);
-				String contents = rs.getString(4);
-				int hit = rs.getInt(5);
-				Date regDate = rs.getDate(6);
-				int groupNo = rs.getInt(7);
-				int orderNo = rs.getInt(8);
-				int depth = rs.getInt(9);
-				
-				BoardVo vo = new BoardVo();
-				vo.setId(id);
-				vo.setUserName(userName);
-				vo.setTitle(title);
-				vo.setContent(contents);
-				vo.setHit(hit);
-				vo.setRegDate(regDate);
-				vo.setGroupNo(groupNo);
-				vo.setOrderNo(orderNo);
-				vo.setDepth(depth);
-				
-				result.add(vo);
-			}
-		} catch(SQLException e) {
+			PreparedStatement pstmt = conn.prepareStatement("update board set title = ?, contents = ? where id = ?");
+		) {
+			pstmt.setString(1, vo.getTitle());
+			pstmt.setString(2, vo.getContent());
+			pstmt.setLong(3, vo.getId());
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
 		}
@@ -54,49 +83,158 @@ public class BoardDao {
 		return result;
 	}
 	
+	// view로 조회한 게시글의 조회수 증가
+	public int updateHitCount(Long id) {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("update board set hit = hit + 1 where id = ?");
+		) {
+			pstmt.setLong(1, id);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+		
+		return result;
+	}
+	
+	public int updateHierarchy(NodeVo vo) {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
+		) {
+			pstmt.setInt(1, vo.getgNo());
+			pstmt.setInt(2, vo.getoNo());
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+		
+		return result;
+	}
+
+	public int deleteById(Long id) {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("delete from board where id = ?");
+		) {
+			pstmt.setLong(1, id);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+		
+		return result;
+	}
+
 	// 게시글 id로 게시글의 내용 보기
 	public BoardVo findById(Long id) {
 		BoardVo result = null;
-		
+
 		try (
-				Connection conn = getConnection();
-				PreparedStatement pstmt = conn.prepareStatement("select title, user.name, contents from board join user on board.user_id = user.id where board.id = ?");
-			){
-				pstmt.setLong(1, id);
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+					"select user.id, title, user.name, contents, hit, g_no, o_no, depth from board join user on board.user_id = user.id where board.id = ?");
+		) {
+			pstmt.setLong(1, id);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				Long userId = rs.getLong(1);
+				String title = rs.getString(2);
+				String userName = rs.getString(3);
+				String contents = rs.getString(4);
+				int hit = rs.getInt(5);
 				
-				ResultSet rs = pstmt.executeQuery();
-				
-				if(rs.next()) {
-					String title = rs.getString(1);
-					String userName = rs.getString(2);
-					String contents = rs.getString(3);
-					
-					result = new BoardVo();
-					result.setTitle(title);
-					result.setUserName(userName);
-					result.setContent(contents);
-				}
-			} catch(SQLException e) {
-				System.err.println("DB 연결에 실패했습니다.");
-				System.err.println("오류: " + e.getMessage());
+				NodeVo nVo = new NodeVo();
+				nVo.setgNo(rs.getInt(6));
+				nVo.setoNo(rs.getInt(7));
+				nVo.setDepth(rs.getInt(8));
+
+				result = new BoardVo();
+				result.setId(id);
+				result.setUserId(userId);
+				result.setTitle(title);
+				result.setUserName(userName);
+				result.setContent(contents);
+				result.setHit(hit);
+				result.setnVo(nVo);
 			}
-		
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
+	
+	// 전체 게시글 리스트 출력
+	public List<BoardVo> findAll() {
+		List<BoardVo> result = new ArrayList<BoardVo>();
+
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+					"select board.id, user.id, user.name, title, contents, hit, reg_date, depth from board join user on board.user_id = user.id order by g_no desc, o_no asc");
+			ResultSet rs = pstmt.executeQuery();
+		) {
+			while (rs.next()) {
+				Long id = rs.getLong(1);
+				Long userId = rs.getLong(2);
+				String userName = rs.getString(3);
+				String title = rs.getString(4);
+				String contents = rs.getString(5);
+				int hit = rs.getInt(6);
+				Date regDate = rs.getDate(7);
+				
+				NodeVo nVo = new NodeVo();
+				nVo.setDepth(rs.getInt(8));
+
+				BoardVo vo = new BoardVo();
+				vo.setId(id);
+				vo.setUserId(userId);
+				vo.setUserName(userName);
+				vo.setTitle(title);
+				vo.setContent(contents);
+				vo.setHit(hit);
+				vo.setRegDate(regDate);
+				vo.setnVo(nVo);
+				
+				result.add(vo);
+			}
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
 		return result;
 	}
 
 	private Connection getConnection() throws SQLException {
 		Connection conn = null;
-		
+
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
-			
+
 			String url = "jdbc:mariadb://192.168.0.181:3306/webdb";
 			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch(ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			System.err.println("드라이버 로딩에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
 		}
-		
+
 		return conn;
 	}
 

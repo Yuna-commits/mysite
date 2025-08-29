@@ -12,7 +12,9 @@ import java.util.List;
 import com.bit2025.mysite.vo.GuestbookVo;
 
 public class GuestbookDao {
-	public void insert(GuestbookVo vo) {
+	public int insert(GuestbookVo vo) {
+		int result = 0;
+		
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn
@@ -27,8 +29,29 @@ public class GuestbookDao {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
 		}
+		
+		return result;
 	}
+	
+	public int deleteByIdAndPassword(Long id, String password) {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where id=? and password=password(?)");
+		) {
+			pstmt.setLong(1, id);
+			pstmt.setString(2, password);
 
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+		
+		return result;
+	}
+	
 	public List<GuestbookVo> findAll() {
 		List<GuestbookVo> result = new ArrayList<GuestbookVo>();
 
@@ -58,21 +81,6 @@ public class GuestbookDao {
 		}
 
 		return result;
-	}
-	
-	public void deleteByIdAndPassword(Long id, String password) {
-		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where id=? and password=password(?)");
-		) {
-			pstmt.setLong(1, id);
-			pstmt.setString(2, password);
-
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("DB 연결에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
 	}
 
 	private Connection getConnection() throws SQLException {

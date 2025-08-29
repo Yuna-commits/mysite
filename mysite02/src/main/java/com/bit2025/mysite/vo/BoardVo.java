@@ -11,9 +11,7 @@ public class BoardVo {
 	private Date regDate;
 
 	// 계층형 테이블 속성
-	private int groupNo; // 게시글 그룹 번호
-	private int orderNo; // 게시글 그룹별 답글 번호
-	private int depth; // 답글의 깊이
+	private NodeVo nVo;
 
 	// user table 속성
 	private Long userId;
@@ -59,28 +57,12 @@ public class BoardVo {
 		this.regDate = regDate;
 	}
 
-	public int getGroupNo() {
-		return groupNo;
+	public NodeVo getnVo() {
+		return nVo;
 	}
 
-	public void setGroupNo(int groupNo) {
-		this.groupNo = groupNo;
-	}
-
-	public int getOrderNo() {
-		return orderNo;
-	}
-
-	public void setOrderNo(int orderNo) {
-		this.orderNo = orderNo;
-	}
-
-	public int getDepth() {
-		return depth;
-	}
-
-	public void setDepth(int depth) {
-		this.depth = depth;
+	public void setnVo(NodeVo nVo) {
+		this.nVo = nVo;
 	}
 
 	public Long getUserId() {
@@ -97,13 +79,6 @@ public class BoardVo {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	@Override
-	public String toString() {
-		return "BoardVo [id=" + id + ", title=" + title + ", content=" + content + ", hit=" + hit + ", regDate="
-				+ regDate + ", groupNo=" + groupNo + ", orderNo=" + orderNo + ", depth=" + depth + ", userId=" + userId
-				+ "]";
 	}
 
 }

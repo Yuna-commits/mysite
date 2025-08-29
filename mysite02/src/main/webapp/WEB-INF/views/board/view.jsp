@@ -16,29 +16,43 @@
 			<div id="board" class="board-form">
 				<table class="tbl-ex">
 					<tr>
-						<th colspan="2">글보기</th>
+						<th colspan="4">글보기</th>
 					</tr>
 					<tr>
 						<td class="label">제목</td>
-						<td>${conVo.title }</td>
+						<td>${cView.title }</td>
 					</tr>
 					<tr>
 						<td class="label">글쓴이</td>
-						<td>${conVo.userName }</td>
+						<td>${cView.userName }</td>
+						<td class="label">조회수</td>
+						<td>${cView.hit }</td>
 					</tr>
 					<tr>
 						<td class="label">내용</td>
 						<td>
 							<div class="view-content">
-								${fn:replace(conVo.content, newLine, "<br>") }
+								${fn:replace(cView.content, newLine, "<br>") }
 							</div>
 						</td>
 					</tr>
 				</table>
-				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board">글목록</a>
-					<a href="${pageContext.request.contextPath }/board?a=modify">글수정</a>
-				</div>
+				
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
+					<input type="hidden" name="a" value="writeform">
+					<input type="hidden" name="reply" value=${true }>
+					<input type="hidden" name="gNo" value="${cView.nVo.gNo }">
+					<input type="hidden" name="oNo" value="${cView.nVo.oNo }">
+					<input type="hidden" name="depth" value="${cView.nVo.depth }">
+					
+					<div class="bottom">
+						<a href="${pageContext.request.contextPath }/board">글목록</a>
+						<c:if test="${authUser.id == cView.userId }">
+							<a href="${pageContext.request.contextPath }/board?a=modifyform&id=${cView.id }">글수정</a>
+						</c:if>
+						<input type="submit" value="답글등록">
+					</div>
+				</form>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />

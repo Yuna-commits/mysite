@@ -35,6 +35,39 @@ public class UserDao {
 		return result;
 	}
 
+	// 인자로 받은 UserVo로 회원 정보 수정
+	public int update(UserVo vo) {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt1 = conn.prepareStatement("update user set name = ?, gender = ? where id = ?");
+			PreparedStatement pstmt2 = conn.prepareStatement("update user set name = ?, password = password(?), gender = ? where id = ?");
+		) {
+			// password 변경 x -> password is blank	
+			if(vo.getPassword().isBlank()) {	
+				pstmt1.setString(1, vo.getName());
+				pstmt1.setString(2, vo.getGender());
+				pstmt1.setLong(3, vo.getId());
+				
+				result = pstmt1.executeUpdate();
+			} else {
+				pstmt2.setString(1, vo.getName());
+				pstmt2.setString(2, vo.getPassword());
+				pstmt2.setString(3, vo.getGender());
+				pstmt2.setLong(4, vo.getId());
+				
+				result = pstmt2.executeUpdate();
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
+	
 	public UserVo findByEmailAndPassword(String email, String password) {
 		UserVo result = null;
 
@@ -99,39 +132,6 @@ public class UserDao {
 			System.err.println("오류: " + e.getMessage());
 		}
 		
-		return result;
-	}
-
-	// 인자로 받은 UserVo로 회원 정보 수정
-	public int update(UserVo vo) {
-		int result = 0;
-		
-		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt1 = conn.prepareStatement("update user set name = ?, gender = ? where id = ?");
-			PreparedStatement pstmt2 = conn.prepareStatement("update user set name = ?, password = password(?), gender = ? where id = ?");
-		) {
-			// password 변경 x -> password is blank	
-			if(vo.getPassword().isBlank()) {	
-				pstmt1.setString(1, vo.getName());
-				pstmt1.setString(2, vo.getGender());
-				pstmt1.setLong(3, vo.getId());
-				
-				result = pstmt1.executeUpdate();
-			} else {
-				pstmt2.setString(1, vo.getName());
-				pstmt2.setString(2, vo.getPassword());
-				pstmt2.setString(3, vo.getGender());
-				pstmt2.setLong(4, vo.getId());
-				
-				result = pstmt2.executeUpdate();
-			}
-			
-		} catch (SQLException e) {
-			System.err.println("DB 연결에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
-
 		return result;
 	}
 

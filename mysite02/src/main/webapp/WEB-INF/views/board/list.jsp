@@ -33,20 +33,23 @@
 					<c:forEach var="vo" items="${list }" varStatus="status">
 					<tr>
 						<td>${count - status.index }</td>
-						<td style="text-align:left; padding-left:${(vo.depth - 1) * 20}">
+						<td style="text-align:left; padding-left:${(vo.nVo.depth) * 15 }px">
 							<!-- 답글만 reply 이미지 표시 -->
-							<c:if test="${vo.depth > 0 }">
+							<c:if test="${vo.nVo.depth > 0 }">
 								<img src="${pageContext.request.contextPath }/assets/images/reply.png">
 							</c:if>
-							<a href="${pageContext.request.contextPath }/board?a=view&id=${vo.id}">${vo.title }</a>
+							<a href="${pageContext.request.contextPath }/board?a=view&id=${vo.id }">${vo.title }</a>
 						</td>
 						<td>${vo.userName }</td>
 						<td>${vo.hit }</td>
 						<td>${vo.regDate }</td>
+						<!-- 게시글 작성자 == 로그인 사용자인 경우(글쓴이 본인)만 삭제 가능 -->
 						<td>
-							<a href="" class="del" 
-							style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>삭제
-							</a>
+							<c:if test="${authUser.id == vo.userId }">
+								<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id }"
+									class="del" style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>
+								</a>
+							</c:if>
 						</td>
 					</tr>
 					</c:forEach>
@@ -66,8 +69,8 @@
 				</div>					
 				 -->
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board?a=write" id="new-book">글쓰기</a>
-				</div>				
+					<a href="${pageContext.request.contextPath }/board?a=writeform" id="new-book">글쓰기</a>
+				</div>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
