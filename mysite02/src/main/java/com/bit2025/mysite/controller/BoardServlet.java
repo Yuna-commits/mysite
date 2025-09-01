@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bit2025.mysite.dao.BoardDao;
 import com.bit2025.mysite.vo.BoardVo;
-import com.bit2025.mysite.vo.NodeVo;
 import com.bit2025.mysite.vo.UserVo;
 
 import jakarta.servlet.RequestDispatcher;
@@ -81,15 +80,15 @@ public class BoardServlet extends HttpServlet {
 			if ("write".equals(action)) {
 				dao.insert(vo);
 			} else {
-				NodeVo nVo = new NodeVo();
-				nVo.setgNo(Integer.parseInt(request.getParameter("gNo")));
-				nVo.setoNo(Integer.parseInt(request.getParameter("oNo")));
-				nVo.setDepth(Integer.parseInt(request.getParameter("depth")));
+				int[] hierNo = new int[3];
+				hierNo[0] = Integer.parseInt(request.getParameter("gNo"));
+				hierNo[1] = Integer.parseInt(request.getParameter("oNo"));
+				hierNo[2] = Integer.parseInt(request.getParameter("depth"));
 				
 				// 1. Update
-				dao.updateHierarchy(nVo);
+				dao.updateHierarchy(hierNo);
 				// 2. nVo
-				dao.insertReply(vo, nVo);
+				dao.insertReply(vo, hierNo);
 			}
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board");

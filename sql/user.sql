@@ -17,4 +17,4 @@ select id, name from user where email = 'dooly@gmail.com' and password = passwor
 
 -- 회원 정보 수정
 select * from user where id = 1;
-update user set password = password('5678') where id = 2;
+update user set gender='Female' where id=4;

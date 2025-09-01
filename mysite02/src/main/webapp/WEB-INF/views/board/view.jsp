@@ -41,9 +41,9 @@
 				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
 					<input type="hidden" name="a" value="writeform">
 					<input type="hidden" name="reply" value=${true }>
-					<input type="hidden" name="gNo" value="${cView.nVo.gNo }">
-					<input type="hidden" name="oNo" value="${cView.nVo.oNo }">
-					<input type="hidden" name="depth" value="${cView.nVo.depth }">
+					<input type="hidden" name="gNo" value="${cView.gNo }">
+					<input type="hidden" name="oNo" value="${cView.oNo }">
+					<input type="hidden" name="depth" value="${cView.depth }">
 					
 					<div class="bottom">
 						<a href="${pageContext.request.contextPath }/board">글목록</a>

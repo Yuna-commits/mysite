@@ -33,9 +33,9 @@
 					<c:forEach var="vo" items="${list }" varStatus="status">
 					<tr>
 						<td>${count - status.index }</td>
-						<td style="text-align:left; padding-left:${(vo.nVo.depth) * 15 }px">
+						<td style="text-align:left; padding-left:${(vo.depth) * 15 }px">
 							<!-- 답글만 reply 이미지 표시 -->
-							<c:if test="${vo.nVo.depth > 0 }">
+							<c:if test="${vo.depth > 0 }">
 								<img src="${pageContext.request.contextPath }/assets/images/reply.png">
 							</c:if>
 							<a href="${pageContext.request.contextPath }/board?a=view&id=${vo.id }">${vo.title }</a>
@@ -56,7 +56,7 @@
 				</table>
 				
 				<!-- pager 추가 -->
-				<!-- <div class="pager">
+				<div class="pager">
 					<ul>
 						<li><a href="">◀</a></li>
 						<li><a href="">1</a></li>
@@ -67,7 +67,6 @@
 						<li><a href="">▶</a></li>
 					</ul>
 				</div>					
-				 -->
 				<div class="bottom">
 					<a href="${pageContext.request.contextPath }/board?a=writeform" id="new-book">글쓰기</a>
 				</div>

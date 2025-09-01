@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.bit2025.mysite.vo.BoardVo;
-import com.bit2025.mysite.vo.NodeVo;
 
 public class BoardDao {
 
@@ -37,7 +36,7 @@ public class BoardDao {
 		return result;
 	}
 	
-	public int insertReply(BoardVo vo, NodeVo nVo) {
+	public int insertReply(BoardVo vo, int[] hierNo) {
 		int result = 0;
 
 		try (
@@ -50,9 +49,9 @@ public class BoardDao {
 			pstmt.setString(2, vo.getTitle());
 			pstmt.setString(3, vo.getContent());
 
-			pstmt.setInt(4, nVo.getgNo());
-			pstmt.setInt(5, nVo.getoNo() + 1);
-			pstmt.setInt(6, nVo.getDepth() + 1);
+			pstmt.setInt(4, hierNo[0]);
+			pstmt.setInt(5, hierNo[1] + 1);
+			pstmt.setInt(6, hierNo[2] + 1);
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -102,15 +101,15 @@ public class BoardDao {
 		return result;
 	}
 	
-	public int updateHierarchy(NodeVo vo) {
+	public int updateHierarchy(int[] hierNo) {
 		int result = 0;
 		
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
 		) {
-			pstmt.setInt(1, vo.getgNo());
-			pstmt.setInt(2, vo.getoNo());
+			pstmt.setInt(1, hierNo[0]);
+			pstmt.setInt(2, hierNo[1]);
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -158,11 +157,9 @@ public class BoardDao {
 				String userName = rs.getString(3);
 				String contents = rs.getString(4);
 				int hit = rs.getInt(5);
-				
-				NodeVo nVo = new NodeVo();
-				nVo.setgNo(rs.getInt(6));
-				nVo.setoNo(rs.getInt(7));
-				nVo.setDepth(rs.getInt(8));
+				int gNo = rs.getInt(6);
+				int oNo = rs.getInt(7);
+				int depth = rs.getInt(8);
 
 				result = new BoardVo();
 				result.setId(id);
@@ -171,7 +168,9 @@ public class BoardDao {
 				result.setUserName(userName);
 				result.setContent(contents);
 				result.setHit(hit);
-				result.setnVo(nVo);
+				result.setgNo(gNo);
+				result.setoNo(oNo);
+				result.setDepth(depth);
 			}
 		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
@@ -199,9 +198,7 @@ public class BoardDao {
 				String contents = rs.getString(5);
 				int hit = rs.getInt(6);
 				Date regDate = rs.getDate(7);
-				
-				NodeVo nVo = new NodeVo();
-				nVo.setDepth(rs.getInt(8));
+				int depth = rs.getInt(8);
 
 				BoardVo vo = new BoardVo();
 				vo.setId(id);
@@ -211,7 +208,7 @@ public class BoardDao {
 				vo.setContent(contents);
 				vo.setHit(hit);
 				vo.setRegDate(regDate);
-				vo.setnVo(nVo);
+				vo.setDepth(depth);
 				
 				result.add(vo);
 			}
