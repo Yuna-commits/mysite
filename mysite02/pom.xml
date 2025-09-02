@@ -24,7 +24,7 @@
 			<version>3.5.2</version>
 		</dependency>
 
-		<!-- JSTL -->
+		<!-- jstl -->
 		<dependency>
 			<groupId>jakarta.el</groupId>
 			<artifactId>jakarta.el-api</artifactId>

@@ -3,6 +3,7 @@ package com.bit2025.mysite.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.bit2025.mysite.common.Page;
 import com.bit2025.mysite.dao.BoardDao;
 import com.bit2025.mysite.vo.BoardVo;
 import com.bit2025.mysite.vo.UserVo;
@@ -121,14 +122,34 @@ public class BoardServlet extends HttpServlet {
 			new BoardDao().update(vo);
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board?a=view&id=" + id);
-		} else {// Default action : 게시글 리스트 출력
-			List<BoardVo> list = new BoardDao().findAll();
+		} else {// Default action : 게시글 리스트 출력 + paging algorithm
+			// reqPage : default 1
+			int reqPage = 1;//Default
+			String sPage = request.getParameter("p");
+			if(sPage!=null) {
+				reqPage = Integer.parseInt(sPage);
+			}
+			
+			BoardDao dao = new BoardDao();// 전체 게시글 수
+			int totalBoard = dao.count();
+			
+			// 1. 페이지 계산
+			Page page = new Page(reqPage, totalBoard);
+			
+			// 2. 계산 결과로 얻은 offset으로 select 쿼리 수행 -> list
+			List<BoardVo> list = dao.findAll(page.getOffset());
+			
+			// 3. 쿼리 결과(데이터 테이블)와 페이징 결과 view에 매핑
+			request.setAttribute("page", page);
+			request.setAttribute("pageCount", Page.PAGE_COUNT);
 			request.setAttribute("list", list);
-
+			
+			// 4. 뷰 포워딩
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/list.jsp");
 			rd.forward(request, response);
 		}
 	}
+	
 
 	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String targetUrl = request.getContextPath() + "/board?a=writeform";

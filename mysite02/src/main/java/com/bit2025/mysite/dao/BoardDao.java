@@ -9,17 +9,38 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.bit2025.mysite.common.Page;
 import com.bit2025.mysite.vo.BoardVo;
 
 public class BoardDao {
+	
+	public int count() {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn
+					.prepareStatement("select count(*) from board");
+		) {
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
 
 	public int insert(BoardVo vo) {
 		int result = 0;
 
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(
-					"insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
+			PreparedStatement pstmt = conn
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
 							+ "from board as sub_board), 0)+1), 1, 0)");
 		) {
 			// Parameter Binding
@@ -41,8 +62,8 @@ public class BoardDao {
 
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(
-					"insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
+			PreparedStatement pstmt = conn
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
 		) {
 			// Parameter Binding
 			pstmt.setLong(1, vo.getUserId());
@@ -67,7 +88,8 @@ public class BoardDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("update board set title = ?, contents = ? where id = ?");
+			PreparedStatement pstmt = conn
+					.prepareStatement("update board set title = ?, contents = ? where id = ?");
 		) {
 			pstmt.setString(1, vo.getTitle());
 			pstmt.setString(2, vo.getContent());
@@ -88,7 +110,8 @@ public class BoardDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("update board set hit = hit + 1 where id = ?");
+			PreparedStatement pstmt = conn
+					.prepareStatement("update board set hit = hit + 1 where id = ?");
 		) {
 			pstmt.setLong(1, id);
 
@@ -106,7 +129,8 @@ public class BoardDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
+			PreparedStatement pstmt = conn
+					.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
 		) {
 			pstmt.setInt(1, hierNo[0]);
 			pstmt.setInt(2, hierNo[1]);
@@ -145,7 +169,9 @@ public class BoardDao {
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
-					"select user.id, title, user.name, contents, hit, g_no, o_no, depth from board join user on board.user_id = user.id where board.id = ?");
+					"select user.id, title, user.name, contents, hit, g_no, o_no, depth "
+					+ "from board join user on board.user_id = user.id "
+					+ "where board.id = ?");
 		) {
 			pstmt.setLong(1, id);
 
@@ -181,15 +207,20 @@ public class BoardDao {
 	}
 	
 	// 전체 게시글 리스트 출력
-	public List<BoardVo> findAll() {
+	public List<BoardVo> findAll(int offset) {
 		List<BoardVo> result = new ArrayList<BoardVo>();
 
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
-					"select board.id, user.id, user.name, title, contents, hit, reg_date, depth from board join user on board.user_id = user.id order by g_no desc, o_no asc");
-			ResultSet rs = pstmt.executeQuery();
+					"select board.id, user.id, user.name, title, contents, hit, reg_date, depth "
+					+ "from board join user on board.user_id = user.id "
+					+ "order by g_no desc, o_no asc limit ? offset ?");
 		) {
+			pstmt.setInt(1, Page.BOARD_COUNT);
+			pstmt.setInt(2, offset);
+			
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Long id = rs.getLong(1);
 				Long userId = rs.getLong(2);
