@@ -87,7 +87,8 @@ public class UserServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath());
 		} else if ("updateform".equals(action)) {
 			/**
-			 * Access Control updateform -> login -> updateform
+			 * Access Control 
+			 * updateform(fail) -> login -> updateform
 			 */
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
@@ -113,7 +114,8 @@ public class UserServlet extends HttpServlet {
 			rd.forward(request, response);
 		} else if ("update".equals(action)) {
 			/**
-			 * Access Control
+			 * Access Control 
+			 * updateform(fail) -> login -> updateform
 			 */
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
@@ -143,12 +145,12 @@ public class UserServlet extends HttpServlet {
 			new UserDao().update(vo);
 
 			// authUser를 수정한 내용으로 변경
-			session.setAttribute("authUser", new UserDao().findById(vo.getId()));
+			authUser.setName(vo.getName());
 
 			// Redirect to localhost/mysite02/user?a=updateform
 			response.sendRedirect(request.getContextPath() + "/user?a=updateform");
-		} else {
-			response.sendRedirect(request.getContextPath());// redirect to /main
+		} else {// Default main
+			response.sendRedirect(request.getContextPath());
 		}
 	}
 

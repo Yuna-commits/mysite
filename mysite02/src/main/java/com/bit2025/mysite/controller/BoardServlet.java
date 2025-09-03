@@ -35,7 +35,8 @@ public class BoardServlet extends HttpServlet {
 			rd.forward(request, response);
 		} else if ("writeform".equals(action)) {// 새 글 작성하기
 			/**
-			 * Access Control writeform(fail) -> login -> writeform
+			 * Access Control
+			 * writeform(fail) -> login -> writeform
 			 */
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
@@ -53,7 +54,8 @@ public class BoardServlet extends HttpServlet {
 			rd.forward(request, response);
 		} else if ("write".equals(action) || "reply".equals(action)) {
 			/**
-			 * Access Control writeform(fail) -> login -> writeform
+			 * Access Control
+			 * writeform(fail) -> login -> writeform
 			 */
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
@@ -122,28 +124,32 @@ public class BoardServlet extends HttpServlet {
 			new BoardDao().update(vo);
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board?a=view&id=" + id);
+		} else if ("search".equals(action)) {
+			/**
+			 * 제목으로 게시글 검색
+			 */
 		} else {// Default action : 게시글 리스트 출력 + paging algorithm
-			// reqPage : default 1
-			int reqPage = 1;//Default
+				// reqPage : default 1
+			int reqPage = 1;// Default
 			String sPage = request.getParameter("p");
-			if(sPage!=null) {
+			if (sPage != null) {
 				reqPage = Integer.parseInt(sPage);
 			}
-			
+
 			BoardDao dao = new BoardDao();// 전체 게시글 수
 			int totalBoard = dao.count();
-			
+
 			// 1. 페이지 계산
 			Page page = new Page(reqPage, totalBoard);
-			
+
 			// 2. 계산 결과로 얻은 offset으로 select 쿼리 수행 -> list
 			List<BoardVo> list = dao.findAll(page.getOffset());
-			
+
 			// 3. 쿼리 결과(데이터 테이블)와 페이징 결과 view에 매핑
 			request.setAttribute("page", page);
 			request.setAttribute("pageCount", Page.PAGE_COUNT);
 			request.setAttribute("list", list);
-			
+
 			// 4. 뷰 포워딩
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/list.jsp");
 			rd.forward(request, response);

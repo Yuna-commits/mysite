@@ -15,9 +15,11 @@ public class Page {
 
 	/**
 	 * ex)
-	 * reqPage : 3 totalBoard : 32 totalPage : (32 / 5) + (0 || 1) = 7 페이지
-	 * offset : (3 - 1) * 5 = 10 -> select ... limit 5 offset 10 : 10번째부터 그 다음 5개의
-	 * 결과 조회 section : (3 - 1) / 5 = 0 -> reqPage는 0번째에 위치 
+	 * reqPage : 3 
+	 * totalBoard : 32 
+	 * totalPage : (32 / 5) + (0 || 1) = 7 페이지
+	 * offset : (3 - 1) * 5 = 10 -> select ... limit 5 offset 10 : 10번째부터 그 다음 5개의 결과 조회
+	 * section : (3 - 1) / 5 = 0 -> reqPage는 0번째에 위치 
 	 * startPage : (0 * 5) + 1 = 1 -> 한 페이지의 시작은 1 페이지 
 	 * endPage : (0 + 1) * 5 = 5 -> 한 페이지의 끝은 5 페이지 (총 페이지 수가 5가 안되면 endPage = totalPage) 
 	 * prev : 현재 섹션의 이전 페이지 없음 = false 
