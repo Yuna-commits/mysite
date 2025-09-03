@@ -1,4 +1,4 @@
-# mysite 사용 기술
+# mysite
 
 ### mysite02 : JSP/Servlet 
 
