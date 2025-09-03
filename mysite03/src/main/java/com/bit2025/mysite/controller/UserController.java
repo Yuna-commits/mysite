@@ -60,8 +60,14 @@ public class UserController {
 		}
 		// 로그인 성공
 		session.setAttribute("authUser", authUser);
-
-		return "redirect:/";
+		
+		String redirectUri = (String) session.getAttribute("redirectUri");
+		if (redirectUri != null) {
+			session.removeAttribute("redirectUri");
+			return redirectUri;
+		} else {
+			return "redirect:/";
+		}
 	}
 
 	@RequestMapping("/logout")
@@ -78,10 +84,14 @@ public class UserController {
 	public String update(Model model, HttpSession session) {
 		/**
 		 * Access Control
+		 * redirect는 항상 GET 요청
+		 * update(fail) -> login(GET) -> update
+		 * 파라미터로 session이 주입되어 널 체크 필요 x, 자동으로 새 세션이 생성됨
 		 */
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
 		if (authUser == null) {
-			return "redirect:/";
+			session.setAttribute("redirectUri", "redirect:/user/update");
+			return "redirect:/user/login";
 		}
 
 		Long id = authUser.getId();
@@ -99,7 +109,8 @@ public class UserController {
 		 */
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
 		if (authUser == null) {
-			return "redirect:/";
+			session.setAttribute("redirectUri", "redirect:/user/update");
+			return "redirect:/user/login";
 		}
 
 		userVo.setId(authUser.getId());
