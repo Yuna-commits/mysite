@@ -99,4 +99,11 @@ public class BoardVo {
 		this.userName = userName;
 	}
 
+	@Override
+	public String toString() {
+		return "BoardVo [id=" + id + ", title=" + title + ", content=" + content + ", hit=" + hit + ", regDate="
+				+ regDate + ", gNo=" + gNo + ", oNo=" + oNo + ", depth=" + depth + ", userId=" + userId + ", userName="
+				+ userName + "]";
+	}
+
 }

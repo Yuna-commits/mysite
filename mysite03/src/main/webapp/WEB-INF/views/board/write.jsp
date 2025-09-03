@@ -12,8 +12,8 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
-					<c:choose>
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/write">
+					<!--<c:choose>
 						<c:when test="${param.reply }">
 							<input type="hidden" name="a" value="reply">
 							<input type="hidden" name="gNo" value="${param.gNo }">
@@ -23,7 +23,7 @@
 						<c:otherwise>
 							<input type="hidden" name="a" value="write">
 						</c:otherwise>
-					</c:choose>
+					</c:choose> -->
 	
 					<table class="tbl-ex">
 						<tr>
