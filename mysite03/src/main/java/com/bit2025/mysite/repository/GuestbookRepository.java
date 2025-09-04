@@ -9,12 +9,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import com.bit2025.mysite.vo.GuestbookVo;
 
 @Repository
 public class GuestbookRepository {
+	
+	private static final Log logger = LogFactory.getLog(GuestbookRepository.class);
+	
 	public int insert(GuestbookVo vo) {
 		int result = 0;
 		
@@ -31,6 +36,7 @@ public class GuestbookRepository {
 		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
+			logger.error(e);
 		}
 		
 		return result;
@@ -50,6 +56,7 @@ public class GuestbookRepository {
 		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
+			logger.error(e);
 		}
 		
 		return result;
@@ -64,6 +71,8 @@ public class GuestbookRepository {
 					"select id, name, message, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by id desc");
 			ResultSet rs = pstmt.executeQuery();
 		) {
+			logger.info("findAll Called from Connection[" + conn + "]");
+
 			while (rs.next()) {
 				Long id = rs.getLong(1);
 				String name = rs.getString(2);
@@ -79,8 +88,9 @@ public class GuestbookRepository {
 				result.add(vo);
 			}
 		} catch (SQLException e) {
-			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("드라이버 로딩에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
+			logger.error(e);
 		}
 
 		return result;

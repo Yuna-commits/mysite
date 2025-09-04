@@ -15,6 +15,8 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<org.springframework-version>6.2.1</org.springframework-version>
+		<jcloverslf4j.version>1.7.36</jcloverslf4j.version>
+		<logback.version>1.2.11</logback.version>
 	</properties>
 
 	<dependencies>
@@ -23,7 +25,15 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
+			<!-- jcl 제외 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jcl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+
 		<!-- mariadb jdbc driver -->
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
@@ -46,6 +56,18 @@
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
 			<version>3.0.1</version>
+		</dependency>
+
+		<!-- logback -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${jcloverslf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 
 		<!-- servlet api -->
