@@ -18,7 +18,7 @@
 
 	<context:annotation-config />
 	<context:component-scan
-		base-package="com.bit2025.mysite.controller" />
+		base-package="com.bit2025.mysite.controller, com.bit2025.mysite.exception" />
 
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	   <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />

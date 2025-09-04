@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>Internal Server Error</h1>
+	<h1>Servlet Context : Internal Server Error</h1>
 	<p>
 		내부 서버에 장애가 발생했습니다.
 	</p>
