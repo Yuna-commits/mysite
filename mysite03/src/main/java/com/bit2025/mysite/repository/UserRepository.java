@@ -1,24 +1,29 @@
 package com.bit2025.mysite.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.bit2025.mysite.vo.UserVo;
 
 @Repository
 public class UserRepository {
+	
+	@Autowired
+	private DataSource dataSource;
 
 	public int insert(UserVo vo) {
 		int result = 0;
 
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("insert into user(name, email, password, gender, join_date) "
 							+ "values (?, ?, password(?), ?, current_date())");
@@ -43,7 +48,7 @@ public class UserRepository {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt1 = conn.prepareStatement("update user set name = ?, gender = ? where id = ?");
 			PreparedStatement pstmt2 = conn.prepareStatement("update user set name = ?, password = password(?), gender = ? where id = ?");
 		) {
@@ -75,7 +80,7 @@ public class UserRepository {
 		UserVo result = null;
 
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("select id, name from user where email = ? and password = password(?)");
 		) {
@@ -106,7 +111,7 @@ public class UserRepository {
 		UserVo result = null;
 		
 		try(
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("select * from user where id = ?");
 		){
 			pstmt.setLong(1, id);
@@ -137,23 +142,4 @@ public class UserRepository {
 		
 		return result;
 	}
-
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-
-		try {
-			// 1. JDBC Driver 로드 -> 실패시 ClassNotFoundException
-			Class.forName("org.mariadb.jdbc.Driver");
-
-			// 2. Connection 연결 -> 호출 위치로 반환, Exception도 호출 위치로
-			String url = "jdbc:mariadb://192.168.0.181:3306/webdb";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.err.println("드라이버 로딩에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
-
-		return conn;
-	}
-
 }
