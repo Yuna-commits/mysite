@@ -7,13 +7,13 @@ public class BoardVo {
 	private Long id;
 	private String title;
 	private String content;
-	private int hit;
+	private Integer hit;
 	private Date regDate;
 
 	// 계층형 테이블 속성
-	private int gNo; // 게시글 그룹 번호
-	private int oNo; // 게시글 그룹별 답글 번호
-	private int depth; // 답글의 깊이
+	private Integer gNo; // 게시글 그룹 번호
+	private Integer oNo; // 게시글 그룹별 답글 번호
+	private Integer depth; // 답글의 깊이
 
 	// user table 속성
 	private Long userId;
@@ -43,11 +43,11 @@ public class BoardVo {
 		this.content = content;
 	}
 
-	public int getHit() {
+	public Integer getHit() {
 		return hit;
 	}
 
-	public void setHit(int hit) {
+	public void setHit(Integer hit) {
 		this.hit = hit;
 	}
 
@@ -59,27 +59,27 @@ public class BoardVo {
 		this.regDate = regDate;
 	}
 
-	public int getgNo() {
+	public Integer getgNo() {
 		return gNo;
 	}
 
-	public void setgNo(int gNo) {
+	public void setgNo(Integer gNo) {
 		this.gNo = gNo;
 	}
 
-	public int getoNo() {
+	public Integer getoNo() {
 		return oNo;
 	}
 
-	public void setoNo(int oNo) {
+	public void setoNo(Integer oNo) {
 		this.oNo = oNo;
 	}
 
-	public int getDepth() {
+	public Integer getDepth() {
 		return depth;
 	}
 
-	public void setDepth(int depth) {
+	public void setDepth(Integer depth) {
 		this.depth = depth;
 	}
 

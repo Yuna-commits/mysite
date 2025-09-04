@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.bit2025.mysite.common.Page;
@@ -16,11 +19,15 @@ import com.bit2025.mysite.vo.BoardVo;
 
 @Repository
 public class BoardRepository {
+	
+	@Autowired
+	private DataSource dataSource;
+	
 	public int count() {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("select count(*) from board");
 		) {
@@ -40,7 +47,7 @@ public class BoardRepository {
 		int result = 0;
 
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
 							+ "from board as sub_board), 0)+1), 1, 0)");
@@ -59,11 +66,11 @@ public class BoardRepository {
 		return result;
 	}
 	
-	public int insertReply(BoardVo vo, int[] hierNo) {
+	public int insertReply(BoardVo vo) {
 		int result = 0;
 
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
 		) {
@@ -71,10 +78,9 @@ public class BoardRepository {
 			pstmt.setLong(1, vo.getUserId());
 			pstmt.setString(2, vo.getTitle());
 			pstmt.setString(3, vo.getContent());
-
-			pstmt.setInt(4, hierNo[0]);
-			pstmt.setInt(5, hierNo[1] + 1);
-			pstmt.setInt(6, hierNo[2] + 1);
+			pstmt.setInt(4, vo.getgNo());
+			pstmt.setInt(5, vo.getoNo() + 1);
+			pstmt.setInt(6, vo.getDepth() + 1);
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -89,13 +95,14 @@ public class BoardRepository {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
-					.prepareStatement("update board set title = ?, contents = ? where id = ?");
+					.prepareStatement("update board set title = ?, contents = ? where id = ? and user_id = ?");
 		) {
 			pstmt.setString(1, vo.getTitle());
 			pstmt.setString(2, vo.getContent());
 			pstmt.setLong(3, vo.getId());
+			pstmt.setLong(4, vo.getUserId());
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -111,7 +118,7 @@ public class BoardRepository {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("update board set hit = hit + 1 where id = ?");
 		) {
@@ -126,16 +133,16 @@ public class BoardRepository {
 		return result;
 	}
 	
-	public int updateHierarchy(int[] hierNo) {
+	public int updateHierarchy(BoardVo boardVo) {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
 		) {
-			pstmt.setInt(1, hierNo[0]);
-			pstmt.setInt(2, hierNo[1]);
+			pstmt.setInt(1, boardVo.getgNo());
+			pstmt.setInt(2, boardVo.getoNo());
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -150,7 +157,7 @@ public class BoardRepository {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("delete from board where id = ?");
 		) {
 			pstmt.setLong(1, id);
@@ -169,7 +176,7 @@ public class BoardRepository {
 		BoardVo result = null;
 
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
 					"select user.id, title, user.name, contents, hit, g_no, o_no, depth "
 					+ "from board join user on board.user_id = user.id "
@@ -207,13 +214,55 @@ public class BoardRepository {
 
 		return result;
 	}
+
+	public BoardVo findByIdAndUserId(Long id, Long userId) {
+		BoardVo result = null;
+		
+		try (
+			Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+					"select title, user.name, contents, hit, g_no, o_no, depth "
+					+ "from board join user on board.user_id = user.id "
+					+ "where board.id = ? and user.id = ?");
+		) {
+			pstmt.setLong(1, id);
+			pstmt.setLong(2, userId);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				String title = rs.getString(1);
+				String userName = rs.getString(2);
+				String contents = rs.getString(3);
+				int hit = rs.getInt(4);
+				int gNo = rs.getInt(5);
+				int oNo = rs.getInt(6);
+				int depth = rs.getInt(7);
+
+				result = new BoardVo();
+				result.setId(id);
+				result.setUserId(userId);
+				result.setTitle(title);
+				result.setUserName(userName);
+				result.setContent(contents);
+				result.setHit(hit);
+				result.setgNo(gNo);
+				result.setoNo(oNo);
+				result.setDepth(depth);
+			}
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
 	
 	// 전체 게시글 리스트 출력
 	public List<BoardVo> findAll(int offset) {
 		List<BoardVo> result = new ArrayList<BoardVo>();
 
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
 					"select board.id, user.id, user.name, title, contents, hit, reg_date, depth "
 					+ "from board join user on board.user_id = user.id "
@@ -252,19 +301,4 @@ public class BoardRepository {
 		return result;
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-
-			String url = "jdbc:mariadb://192.168.0.181:3306/webdb";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.err.println("드라이버 로딩에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
-
-		return conn;
-	}
 }

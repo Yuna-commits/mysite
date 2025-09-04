@@ -62,8 +62,7 @@ public class UserController {
 		session.setAttribute("authUser", authUser);
 		
 		String redirectUri = (String) session.getAttribute("redirectUri");
-		if (redirectUri != null) {
-			session.removeAttribute("redirectUri");
+		if(userService.isValidAccess(session)) {
 			return redirectUri;
 		} else {
 			return "redirect:/";

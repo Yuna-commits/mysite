@@ -11,6 +11,7 @@ insert into board values(null, 8, '둘리야', '시끄럽다', 0, current_date()
 -- 게시글, 답글 조회
 -- 페이징 기능 추가 필요
 select count(*) from board;
+select board.id, user.id, user.name, title, contents, hit, reg_date, g_no, o_no, depth from board join user on board.user_id = user.id order by g_no desc, o_no asc;
 select board.id, user.id, user.name, title, contents, hit, reg_date, g_no, o_no, depth from board join user on board.user_id = user.id order by g_no desc, o_no asc limit 5 offset 5;
 -- 게시글 id로 내용 보기
 select title, user.name, contents from board join user on board.user_id = user.id where board.id = 3 and user.id = 1;
@@ -29,4 +30,4 @@ update board set hit = hit + 1 where id = 1;
 update board set title = '수정', contents = '게시글\n수정\n테스트' where id = 3 and user_id = 1;
 
 -- 본인 게시글 삭제
-delete from board where id = 1 and user_id = 1;
+delete board, user from board join user on board.user_id = user.id where board.id = 48 and user.password = password('1111');

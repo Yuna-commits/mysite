@@ -23,19 +23,44 @@ public class BoardService {
 		return new Page(reqPage, totalBoard);
 	}
 
-	public List<BoardVo> getBoardList(Page page) {
+	public List<BoardVo> getContentList(Page page) {
+		List<BoardVo> list = boardRepository.findAll(page.getOffset());
+		
 		// 2. 계산 결과로 얻은 offset으로 select 쿼리 수행 -> list
-		return boardRepository.findAll(page.getOffset());
+		return list;
 	}
 
-	public BoardVo getBoardView(Long id) {
-		// 게시글 조회수 증가
-		boardRepository.updateHitCount(id);
-
-		return boardRepository.findById(id);
+	public BoardVo getContentView(Long id) {
+		BoardVo boardVo = boardRepository.findById(id);
+		
+		if(boardVo != null) {
+			// 게시글 조회수 증가
+			boardRepository.updateHitCount(id);
+		}
+		
+		return boardVo;
+	}
+	
+	public BoardVo getContentView(Long id, Long userId) {
+		BoardVo boardVo = boardRepository.findByIdAndUserId(id, userId);
+		
+		return boardVo;
 	}
 
-	public void writing(BoardVo boardVo) {
-		boardRepository.insert(boardVo);
+	public void writeContent(BoardVo boardVo) {
+		if (boardVo.getDepth() != null) {
+			boardRepository.updateHierarchy(boardVo);
+			boardRepository.insertReply(boardVo);
+		} else {
+			boardRepository.insert(boardVo);
+		}
+	}
+	
+	public void deleteContent(Long id) {
+		boardRepository.deleteById(id);
+	}
+	
+	public void modifyContent(BoardVo boardVo) {
+		boardRepository.update(boardVo);
 	}
 }

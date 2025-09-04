@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,27 +24,26 @@ public class BoardController {
 	private BoardService boardService;
 
 	@RequestMapping({ "", "/{p}" })
-	public String list(@PathVariable(value = "p", required = false) Integer p, Model model) {
+	public String index(@PathVariable(value = "p", required = false) Integer p, Model model) {
 		// reqPage : default 1
 		if (p == null) {
 			p = 1;
 		}
 		// BoardService에서 paging
 		Page page = boardService.getPage(p);
-		List<BoardVo> list = boardService.getBoardList(page);
+		List<BoardVo> list = boardService.getContentList(page);
 
 		model.addAttribute("pageCount", Page.PAGE_COUNT);
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
 
-		return "/board/list";
+		return "/board/index";
 	}
 
 	@RequestMapping("/view/{id}")
 	public String view(@PathVariable("id") Long id, Model model) {
-		BoardVo cView = boardService.getBoardView(id);
-
-		model.addAttribute("cView", cView);
+		BoardVo boardVo = boardService.getContentView(id);
+		model.addAttribute("boardVo", boardVo);
 
 		return "/board/view";
 	}
@@ -66,7 +64,7 @@ public class BoardController {
 		return "board/write";
 	}
 	
-	@RequestMapping(value="/write", method = RequestMethod.POST)
+	@RequestMapping(value = "/write", method = RequestMethod.POST)
 	public String write(BoardVo boardVo, HttpSession session) {
 		/**
 		 * Access Control
@@ -79,8 +77,68 @@ public class BoardController {
 		}
 		
 		boardVo.setUserId(authUser.getId());
-		boardService.writing(boardVo);
+		boardService.writeContent(boardVo);
 		
 		return "redirect:/board";
+	}
+	
+	@RequestMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id) {
+		boardService.deleteContent(id);
+		
+		return "redirect:/board";
+	}
+	
+	// modifyform
+	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
+	public String modify(@PathVariable("id") Long id, Model model, HttpSession session) {
+		/**
+		 * Access Control
+		 * write처럼 login으로 리다이렉트하도록 수정 필요
+		 */
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if (authUser == null) {
+			return "redirect:/";
+		}
+		
+		BoardVo boardVo = boardService.getContentView(id, authUser.getId());
+		model.addAttribute("boardVo", boardVo);
+		
+		return "/board/modify";
+	}
+
+	@RequestMapping(value = "/modify/{id}", method = RequestMethod.POST)
+	public String modify(BoardVo boardVo, HttpSession session) {
+		/**
+		 * Access Control
+		 */
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if (authUser == null) {
+			return "redirect:/";
+		}
+
+		boardVo.setUserId(authUser.getId());
+		boardService.modifyContent(boardVo);
+
+		return "redirect:/board/view/" + boardVo.getId();
+	}
+
+	@RequestMapping(value = "/reply/{id}", method = RequestMethod.GET)
+	public String reply(@PathVariable("id") Long id, Model model, HttpSession session) {
+		/**
+		 * Access Control
+		 * reply(fail) -> login(GET) -> reply
+		 */
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if (authUser == null) {
+			session.setAttribute("redirectUri", "redirect:/board/reply/" + id);
+			return "redirect:/user/login";
+		}
+
+		BoardVo boardVo = boardService.getContentView(id);
+		
+		model.addAttribute("boardVo", boardVo);
+		
+		return "/board/reply";
 	}
 }

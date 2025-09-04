@@ -27,9 +27,9 @@
 					<fieldset>
 						<legend>성별</legend>
 						<label>여</label> 
-						<input type="radio" name="gender" value="Female" ${userVo.gender == "Female" ? 'checked' : '' }>
+						<input type="radio" name="gender" value="Female" <c:if test='${userVo.gender == "Female" }'>checked</c:if>>
 						<label>남</label> 
-						<input type="radio" name="gender" value="Male" ${userVo.gender == "Female" ? '' : 'checked' }>
+						<input type="radio" name="gender" value="Male" <c:if test='${userVo.gender == "Male" }'>checked</c:if>>
 					</fieldset>
 					
 					<input type="submit" value="수정하기">
