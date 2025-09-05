@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 import com.bit2025.mysite.vo.UserVo;
 
@@ -115,7 +114,7 @@ public class UserDao {
 				String email = rs.getString(3);
 				String password = rs.getString(4);
 				String gender = rs.getString(5);
-				Date joinDate = rs.getDate(6);
+				String joinDate = rs.getString(6);
 				
 				result = new UserVo();
 				result.setId(id);

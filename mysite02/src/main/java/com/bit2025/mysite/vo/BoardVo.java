@@ -1,14 +1,12 @@
 package com.bit2025.mysite.vo;
 
-import java.util.Date;
-
 public class BoardVo {
 
 	private Long id;
 	private String title;
 	private String contents;
 	private int hit;
-	private Date regDate;
+	private String regDate;
 
 	// 계층형 테이블 속성
 	private Integer groupNo; // 게시글 그룹 번호
@@ -51,11 +49,11 @@ public class BoardVo {
 		this.hit = hit;
 	}
 
-	public Date getRegDate() {
+	public String getRegDate() {
 		return regDate;
 	}
 
-	public void setRegDate(Date regDate) {
+	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
 

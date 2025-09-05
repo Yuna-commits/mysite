@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.bit2025.mysite.common.Page;
@@ -217,7 +216,7 @@ public class BoardDao {
 				String title = rs.getString(4);
 				String contents = rs.getString(5);
 				int hit = rs.getInt(6);
-				Date regDate = rs.getDate(7);
+				String regDate = rs.getString(7);
 				int depth = rs.getInt(8);
 
 				BoardVo vo = new BoardVo();
