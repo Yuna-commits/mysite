@@ -1,14 +1,12 @@
 package com.bit2025.mysite.vo;
 
-import java.util.Date;
-
 public class UserVo {
 	private Long id;
 	private String name;
 	private String email;
 	private String password;
 	private String gender;
-	private Date joinDate;
+	private String joinDate;
 
 	public Long getId() {
 		return id;
@@ -50,11 +48,11 @@ public class UserVo {
 		this.gender = gender;
 	}
 
-	public Date getJoinDate() {
+	public String getJoinDate() {
 		return joinDate;
 	}
 
-	public void setJoinDate(Date joinDate) {
+	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
 	}
 
