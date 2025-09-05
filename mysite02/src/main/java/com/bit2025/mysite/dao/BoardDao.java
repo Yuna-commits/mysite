@@ -183,8 +183,8 @@ public class BoardDao {
 				String userName = rs.getString(3);
 				String contents = rs.getString(4);
 				int hit = rs.getInt(5);
-				int gNo = rs.getInt(6);
-				int oNo = rs.getInt(7);
+				int groupNo = rs.getInt(6);
+				int orderNo = rs.getInt(7);
 				int depth = rs.getInt(8);
 
 				result = new BoardVo();
@@ -194,8 +194,8 @@ public class BoardDao {
 				result.setUserName(userName);
 				result.setContent(contents);
 				result.setHit(hit);
-				result.setgNo(gNo);
-				result.setoNo(oNo);
+				result.setGroupNo(groupNo);
+				result.setOrderNo(orderNo);
 				result.setDepth(depth);
 			}
 		} catch (SQLException e) {

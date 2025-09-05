@@ -6,13 +6,13 @@ public class BoardVo {
 
 	private Long id;
 	private String title;
-	private String content;
+	private String contents;
 	private Integer hit;
 	private Date regDate;
 
 	// 계층형 테이블 속성
-	private Integer gNo; // 게시글 그룹 번호
-	private Integer oNo; // 게시글 그룹별 답글 번호
+	private Integer groupNo; // 게시글 그룹 번호
+	private Integer orderNo; // 게시글 그룹별 답글 번호
 	private Integer depth; // 답글의 깊이
 
 	// user table 속성
@@ -35,12 +35,12 @@ public class BoardVo {
 		this.title = title;
 	}
 
-	public String getContent() {
-		return content;
+	public String getContents() {
+		return contents;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setContents(String contents) {
+		this.contents = contents;
 	}
 
 	public Integer getHit() {
@@ -59,20 +59,20 @@ public class BoardVo {
 		this.regDate = regDate;
 	}
 
-	public Integer getgNo() {
-		return gNo;
+	public Integer getGroupNo() {
+		return groupNo;
 	}
 
-	public void setgNo(Integer gNo) {
-		this.gNo = gNo;
+	public void setGroupNo(Integer groupNo) {
+		this.groupNo = groupNo;
 	}
 
-	public Integer getoNo() {
-		return oNo;
+	public Integer getOrderNo() {
+		return orderNo;
 	}
 
-	public void setoNo(Integer oNo) {
-		this.oNo = oNo;
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 
 	public Integer getDepth() {
@@ -101,9 +101,9 @@ public class BoardVo {
 
 	@Override
 	public String toString() {
-		return "BoardVo [id=" + id + ", title=" + title + ", content=" + content + ", hit=" + hit + ", regDate="
-				+ regDate + ", gNo=" + gNo + ", oNo=" + oNo + ", depth=" + depth + ", userId=" + userId + ", userName="
-				+ userName + "]";
+		return "BoardVo [id=" + id + ", title=" + title + ", contents=" + contents + ", hit=" + hit + ", regDate="
+				+ regDate + ", groupNo=" + groupNo + ", orderNo=" + orderNo + ", depth=" + depth + ", userId=" + userId
+				+ ", userName=" + userName + "]";
 	}
 
 }

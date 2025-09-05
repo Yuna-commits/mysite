@@ -13,11 +13,10 @@
 		<div id="content">
 			<div id="board">
 				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/write">
-					<input type="hidden" name="a" value="reply">
-					<input type="hidden" name="gNo" value="${boardVo.gNo }">
-					<input type="hidden" name="oNo" value="${boardVo.oNo }">
+					<input type="hidden" name="groupNo" value="${boardVo.groupNo }">
+					<input type="hidden" name="orderNo" value="${boardVo.orderNo }">
 					<input type="hidden" name="depth" value="${boardVo.depth }">
-
+					
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
@@ -29,7 +28,7 @@
 						<tr>
 							<td class="label">내용</td>
 							<td>
-								<textarea id="content" name="content"></textarea>
+								<textarea id="content" name="contents"></textarea>
 							</td>
 						</tr>
 					</table>

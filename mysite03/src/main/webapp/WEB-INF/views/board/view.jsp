@@ -32,7 +32,7 @@
 						<td class="label">내용</td>
 						<td>
 							<div class="view-content">
-								${fn:replace(boardVo.content, newLine, "<br>") }
+								${fn:replace(boardVo.contents, newLine, "<br>") }
 							</div>
 						</td>
 					</tr>

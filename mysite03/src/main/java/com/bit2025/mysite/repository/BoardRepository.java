@@ -1,7 +1,6 @@
 package com.bit2025.mysite.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,13 +48,13 @@ public class BoardRepository {
 		try (
 			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn
-					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
-							+ "from board as sub_board), 0)+1), 1, 0)");
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), "
+							+ "(ifnull((select max(g_no) from board as sub_board), 0)+1), 1, 0)");
 		) {
 			// Parameter Binding
 			pstmt.setLong(1, vo.getUserId());
 			pstmt.setString(2, vo.getTitle());
-			pstmt.setString(3, vo.getContent());
+			pstmt.setString(3, vo.getContents());
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -77,9 +76,9 @@ public class BoardRepository {
 			// Parameter Binding
 			pstmt.setLong(1, vo.getUserId());
 			pstmt.setString(2, vo.getTitle());
-			pstmt.setString(3, vo.getContent());
-			pstmt.setInt(4, vo.getgNo());
-			pstmt.setInt(5, vo.getoNo() + 1);
+			pstmt.setString(3, vo.getContents());
+			pstmt.setInt(4, vo.getGroupNo());
+			pstmt.setInt(5, vo.getOrderNo() + 1);
 			pstmt.setInt(6, vo.getDepth() + 1);
 
 			result = pstmt.executeUpdate();
@@ -100,7 +99,7 @@ public class BoardRepository {
 					.prepareStatement("update board set title = ?, contents = ? where id = ? and user_id = ?");
 		) {
 			pstmt.setString(1, vo.getTitle());
-			pstmt.setString(2, vo.getContent());
+			pstmt.setString(2, vo.getContents());
 			pstmt.setLong(3, vo.getId());
 			pstmt.setLong(4, vo.getUserId());
 
@@ -114,7 +113,7 @@ public class BoardRepository {
 	}
 	
 	// view로 조회한 게시글의 조회수 증가
-	public int updateHitCount(Long id) {
+	public int updateHit(Long id) {
 		int result = 0;
 		
 		try (
@@ -133,7 +132,7 @@ public class BoardRepository {
 		return result;
 	}
 	
-	public int updateHierarchy(BoardVo boardVo) {
+	public int updateOrderNo(BoardVo boardVo) {
 		int result = 0;
 		
 		try (
@@ -141,8 +140,8 @@ public class BoardRepository {
 			PreparedStatement pstmt = conn
 					.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
 		) {
-			pstmt.setInt(1, boardVo.getgNo());
-			pstmt.setInt(2, boardVo.getoNo());
+			pstmt.setInt(1, boardVo.getGroupNo());
+			pstmt.setInt(2, boardVo.getOrderNo());
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -153,14 +152,15 @@ public class BoardRepository {
 		return result;
 	}
 
-	public int deleteById(Long id) {
+	public int delete(Long id, Long userId) {
 		int result = 0;
 		
 		try (
 			Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from board where id = ?");
+			PreparedStatement pstmt = conn.prepareStatement("delete from board where id = ? and user_id = ?");
 		) {
 			pstmt.setLong(1, id);
+			pstmt.setLong(2, userId);
 			
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -192,8 +192,8 @@ public class BoardRepository {
 				String userName = rs.getString(3);
 				String contents = rs.getString(4);
 				int hit = rs.getInt(5);
-				int gNo = rs.getInt(6);
-				int oNo = rs.getInt(7);
+				int groupNo = rs.getInt(6);
+				int orderNo = rs.getInt(7);
 				int depth = rs.getInt(8);
 
 				result = new BoardVo();
@@ -201,10 +201,10 @@ public class BoardRepository {
 				result.setUserId(userId);
 				result.setTitle(title);
 				result.setUserName(userName);
-				result.setContent(contents);
+				result.setContents(contents);
 				result.setHit(hit);
-				result.setgNo(gNo);
-				result.setoNo(oNo);
+				result.setGroupNo(groupNo);
+				result.setOrderNo(orderNo);
 				result.setDepth(depth);
 			}
 		} catch (SQLException e) {
@@ -234,8 +234,8 @@ public class BoardRepository {
 				String userName = rs.getString(2);
 				String contents = rs.getString(3);
 				int hit = rs.getInt(4);
-				int gNo = rs.getInt(5);
-				int oNo = rs.getInt(6);
+				int groupNo = rs.getInt(5);
+				int orderNo = rs.getInt(6);
 				int depth = rs.getInt(7);
 
 				result = new BoardVo();
@@ -243,10 +243,10 @@ public class BoardRepository {
 				result.setUserId(userId);
 				result.setTitle(title);
 				result.setUserName(userName);
-				result.setContent(contents);
+				result.setContents(contents);
 				result.setHit(hit);
-				result.setgNo(gNo);
-				result.setoNo(oNo);
+				result.setGroupNo(groupNo);
+				result.setOrderNo(orderNo);
 				result.setDepth(depth);
 			}
 		} catch (SQLException e) {
@@ -287,7 +287,7 @@ public class BoardRepository {
 				vo.setUserId(userId);
 				vo.setUserName(userName);
 				vo.setTitle(title);
-				vo.setContent(contents);
+				vo.setContents(contents);
 				vo.setHit(hit);
 				vo.setRegDate(regDate);
 				vo.setDepth(depth);

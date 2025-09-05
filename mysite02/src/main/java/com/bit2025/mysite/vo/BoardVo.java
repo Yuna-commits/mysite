@@ -11,8 +11,8 @@ public class BoardVo {
 	private Date regDate;
 
 	// 계층형 테이블 속성
-	private int gNo; // 게시글 그룹 번호
-	private int oNo; // 게시글 그룹별 답글 번호
+	private int groupNo; // 게시글 그룹 번호
+	private int orderNo; // 게시글 그룹별 답글 번호
 	private int depth; // 답글의 깊이
 
 	// user table 속성
@@ -59,20 +59,20 @@ public class BoardVo {
 		this.regDate = regDate;
 	}
 
-	public int getgNo() {
-		return gNo;
+	public int getGroupNo() {
+		return groupNo;
 	}
 
-	public void setgNo(int gNo) {
-		this.gNo = gNo;
+	public void setGroupNo(int groupNo) {
+		this.groupNo = groupNo;
 	}
 
-	public int getoNo() {
-		return oNo;
+	public int getOrderNo() {
+		return orderNo;
 	}
 
-	public void setoNo(int oNo) {
-		this.oNo = oNo;
+	public void setOrderNo(int orderNo) {
+		this.orderNo = orderNo;
 	}
 
 	public int getDepth() {

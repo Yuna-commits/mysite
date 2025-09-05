@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +32,7 @@ public class BoardController {
 		}
 		// BoardService에서 paging
 		Page page = boardService.getPage(p);
-		List<BoardVo> list = boardService.getContentList(page);
+		List<BoardVo> list = boardService.getContentsList(page);
 
 		model.addAttribute("pageCount", Page.PAGE_COUNT);
 		model.addAttribute("page", page);
@@ -42,7 +43,7 @@ public class BoardController {
 
 	@RequestMapping("/view/{id}")
 	public String view(@PathVariable("id") Long id, Model model) {
-		BoardVo boardVo = boardService.getContentView(id);
+		BoardVo boardVo = boardService.getContentsView(id);
 		model.addAttribute("boardVo", boardVo);
 
 		return "/board/view";
@@ -77,14 +78,23 @@ public class BoardController {
 		}
 		
 		boardVo.setUserId(authUser.getId());
-		boardService.writeContent(boardVo);
+		boardService.addContents(boardVo);
 		
 		return "redirect:/board";
 	}
 	
 	@RequestMapping("/delete/{id}")
-	public String delete(@PathVariable("id") Long id) {
-		boardService.deleteContent(id);
+	public String delete(@PathVariable("id") Long boardId, HttpSession session) {
+		/**
+		 * Access Control
+		 * write(fail) -> login(GET) -> write
+		 */
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if (authUser == null) {
+			session.setAttribute("redirectUri", "redirect:/board/write");
+			return "redirect:/user/login";
+		}
+		boardService.deleteContents(boardId, authUser.getId());
 		
 		return "redirect:/board";
 	}
@@ -101,7 +111,7 @@ public class BoardController {
 			return "redirect:/";
 		}
 		
-		BoardVo boardVo = boardService.getContentView(id, authUser.getId());
+		BoardVo boardVo = boardService.getContentsView(id, authUser.getId());
 		model.addAttribute("boardVo", boardVo);
 		
 		return "/board/modify";
@@ -118,7 +128,7 @@ public class BoardController {
 		}
 
 		boardVo.setUserId(authUser.getId());
-		boardService.modifyContent(boardVo);
+		boardService.modifyContents(boardVo);
 
 		return "redirect:/board/view/" + boardVo.getId();
 	}
@@ -135,8 +145,7 @@ public class BoardController {
 			return "redirect:/user/login";
 		}
 
-		BoardVo boardVo = boardService.getContentView(id);
-		
+		BoardVo boardVo = boardService.getContentsView(id);
 		model.addAttribute("boardVo", boardVo);
 		
 		return "/board/reply";
