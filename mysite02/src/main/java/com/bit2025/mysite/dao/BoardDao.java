@@ -39,10 +39,10 @@ public class BoardDao {
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt1 = conn
-					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, now(), (ifnull((select max(g_no) "
 							+ "from board as sub_board), 0)+1), 1, 0)");
 			PreparedStatement pstmt2 = conn
-					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, now(), ?, ?, ?)");
 		) {
 			if(vo.getGroupNo() == null) {// 새 글 작성
 				// Parameter Binding
@@ -201,7 +201,8 @@ public class BoardDao {
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
-					"select board.id, user.id, user.name, title, contents, hit, reg_date, depth "
+					"select board.id, user.id, user.name, title, contents, hit, "
+					+ "date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate, depth "
 					+ "from board join user on board.user_id = user.id "
 					+ "order by g_no desc, o_no asc limit ? offset ?");
 		) {
