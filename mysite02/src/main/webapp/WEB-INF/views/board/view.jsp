@@ -20,39 +20,33 @@
 					</tr>
 					<tr>
 						<td class="label">제목</td>
-						<td>${cView.title }</td>
+						<td>${boardVo.title }</td>
 					</tr>
 					<tr>
 						<td class="label">글쓴이</td>
-						<td>${cView.userName }</td>
+						<td>${boardVo.userName }</td>
 						<td class="label">조회수</td>
-						<td>${cView.hit }</td>
+						<td>${boardVo.hit }</td>
 					</tr>
 					<tr>
 						<td class="label">내용</td>
 						<td>
 							<div class="view-content">
-								${fn:replace(cView.content, newLine, "<br>") }
+								${fn:replace(boardVo.contents, newLine, "<br>") }
 							</div>
 						</td>
 					</tr>
 				</table>
 				
-				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
-					<input type="hidden" name="a" value="writeform">
-					<input type="hidden" name="reply" value=${true }>
-					<input type="hidden" name="gNo" value="${cView.gNo }">
-					<input type="hidden" name="oNo" value="${cView.oNo }">
-					<input type="hidden" name="depth" value="${cView.depth }">
-					
-					<div class="bottom">
-						<a href="${pageContext.request.contextPath }/board">글목록</a>
-						<c:if test="${authUser.id == cView.userId }">
-							<a href="${pageContext.request.contextPath }/board?a=modifyform&id=${cView.id }">글수정</a>
+				<div class="bottom">
+					<c:if test="${not empty authUser }">
+						<c:if test="${authUser.id == boardVo.userId }">
+							<a href="${pageContext.request.contextPath }/board?a=modifyform&id=${boardVo.id }">글수정</a>
 						</c:if>
-						<input type="submit" value="답글등록">
-					</div>
-				</form>
+						<a href="${pageContext.request.contextPath }/board?a=replyform&id=${boardVo.id }">답글등록</a>
+					</c:if>
+					<a href="${pageContext.request.contextPath }/board">글목록</a>
+				</div>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />

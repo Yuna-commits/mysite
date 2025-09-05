@@ -6,7 +6,7 @@ desc board;
 
 -- 새 글 작성(둘리)
 -- 새 게시글의 o_no : 1, depth : 0
-insert into board values(null, 8, '둘리야', '시끄럽다', 0, current_date(), (ifnull((select max(g_no) from board as sub_board), 0)+1), 1, 0);
+insert into board values(null, 5, '글 수 늘리기', ',,,', 0, current_date(), (ifnull((select max(g_no) from board as sub_board), 0)+1), 1, 0);
 
 -- 게시글, 답글 조회
 -- 페이징 기능 추가 필요

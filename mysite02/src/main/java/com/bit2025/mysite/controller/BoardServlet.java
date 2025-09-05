@@ -26,10 +26,10 @@ public class BoardServlet extends HttpServlet {
 			Long id = Long.parseLong(request.getParameter("id"));
 
 			BoardDao dao = new BoardDao();
-			dao.updateHitCount(id);
-			BoardVo cView = dao.findById(id);
+			dao.updateHit(id);
+			BoardVo boardVo = dao.findById(id);
 
-			request.setAttribute("cView", cView);
+			request.setAttribute("boardVo", boardVo);
 
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/view.jsp");
 			rd.forward(request, response);
@@ -72,29 +72,54 @@ public class BoardServlet extends HttpServlet {
 			Long userId = authUser.getId();
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
-
+			
 			BoardVo vo = new BoardVo();
 			vo.setUserId(userId);
 			vo.setTitle(title);
-			vo.setContent(content);
-
+			vo.setContents(content);
+			
 			BoardDao dao = new BoardDao();
 			
-			if ("write".equals(action)) {
-				dao.insert(vo);
-			} else {
-				int[] hierNo = new int[3];
-				hierNo[0] = Integer.parseInt(request.getParameter("gNo"));
-				hierNo[1] = Integer.parseInt(request.getParameter("oNo"));
-				hierNo[2] = Integer.parseInt(request.getParameter("depth"));
+			if("reply".equals(action)) {
+				Integer groupNo = Integer.parseInt(request.getParameter("groupNo"));
+				Integer orderNo = Integer.parseInt(request.getParameter("orderNo"));
+				Integer depth = Integer.parseInt(request.getParameter("depth"));
 				
-				// 1. Update
-				dao.updateHierarchy(hierNo);
-				// 2. nVo
-				dao.insertReply(vo, hierNo);
+				vo.setGroupNo(groupNo);
+				vo.setOrderNo(orderNo);
+				vo.setDepth(depth);
+				
+				dao.updateOrderNo(vo);
 			}
+
+			dao.insert(vo);
+			
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board");
+		} else if("replyform".equals(action)) {
+			/**
+			 * Access Control
+			 * writeform(fail) -> login -> writeform
+			 */
+			HttpSession session = request.getSession(false);
+			if (session == null) {// 로그인 세션이 없는 사용자
+				redirectToLogin(request, response);
+				return;
+			}
+
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+			if (authUser == null) {// 로그인 안 한 사용자
+				redirectToLogin(request, response);
+				return;
+			}
+			
+			Long id = Long.parseLong(request.getParameter("id"));
+			
+			BoardVo boardVo = new BoardDao().findById(id);
+			request.setAttribute("boardVo", boardVo);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/replyform.jsp");
+			rd.forward(request, response);
 		} else if ("delete".equals(action)) {
 			Long id = Long.parseLong(request.getParameter("id"));
 
@@ -103,23 +128,21 @@ public class BoardServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/board");
 		} else if ("modifyform".equals(action)) {
 			Long id = Long.parseLong(request.getParameter("id"));
+			BoardVo boardVo = new BoardDao().findById(id);
 
-			BoardVo cModify = new BoardDao().findById(id);
-
-			request.setAttribute("cModify", cModify);
+			request.setAttribute("boardVo", boardVo);
 
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/modifyform.jsp");
 			rd.forward(request, response);
 		} else if ("modify".equals(action)) {
 			Long id = Long.parseLong(request.getParameter("id"));
-
 			String title = request.getParameter("title");
-			String content = request.getParameter("content");
+			String contents = request.getParameter("contents");
 
 			BoardVo vo = new BoardVo();
 			vo.setId(id);
 			vo.setTitle(title);
-			vo.setContent(content);
+			vo.setContents(contents);
 
 			new BoardDao().update(vo);
 			// redirect to mysite02/board
@@ -146,8 +169,8 @@ public class BoardServlet extends HttpServlet {
 			List<BoardVo> list = dao.findAll(page.getOffset());
 
 			// 3. 쿼리 결과(데이터 테이블)와 페이징 결과 view에 매핑
-			request.setAttribute("page", page);
 			request.setAttribute("pageCount", Page.PAGE_COUNT);
+			request.setAttribute("page", page);
 			request.setAttribute("list", list);
 
 			// 4. 뷰 포워딩

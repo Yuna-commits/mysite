@@ -39,42 +39,31 @@ public class BoardDao {
 
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn
+			PreparedStatement pstmt1 = conn
 					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), (ifnull((select max(g_no) "
 							+ "from board as sub_board), 0)+1), 1, 0)");
-		) {
-			// Parameter Binding
-			pstmt.setLong(1, vo.getUserId());
-			pstmt.setString(2, vo.getTitle());
-			pstmt.setString(3, vo.getContent());
-
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("DB 연결에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
-
-		return result;
-	}
-	
-	public int insertReply(BoardVo vo, int[] hierNo) {
-		int result = 0;
-
-		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt = conn
+			PreparedStatement pstmt2 = conn
 					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
 		) {
-			// Parameter Binding
-			pstmt.setLong(1, vo.getUserId());
-			pstmt.setString(2, vo.getTitle());
-			pstmt.setString(3, vo.getContent());
+			if(vo.getGroupNo() == null) {// 새 글 작성
+				// Parameter Binding
+				pstmt1.setLong(1, vo.getUserId());
+				pstmt1.setString(2, vo.getTitle());
+				pstmt1.setString(3, vo.getContents());
 
-			pstmt.setInt(4, hierNo[0]);
-			pstmt.setInt(5, hierNo[1] + 1);
-			pstmt.setInt(6, hierNo[2] + 1);
+				result = pstmt1.executeUpdate();
+			} else {//답글 작성
+				// Parameter Binding
+				pstmt2.setLong(1, vo.getUserId());
+				pstmt2.setString(2, vo.getTitle());
+				pstmt2.setString(3, vo.getContents());
+				pstmt2.setInt(4,vo.getGroupNo());
+				pstmt2.setInt(5, vo.getOrderNo() + 1);
+				pstmt2.setInt(6, vo.getDepth() + 1);
 
-			result = pstmt.executeUpdate();
+				result = pstmt2.executeUpdate();
+			}
+			
 		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
@@ -82,7 +71,7 @@ public class BoardDao {
 
 		return result;
 	}
-	
+
 	public int update(BoardVo vo) {
 		int result = 0;
 		
@@ -92,7 +81,7 @@ public class BoardDao {
 					.prepareStatement("update board set title = ?, contents = ? where id = ?");
 		) {
 			pstmt.setString(1, vo.getTitle());
-			pstmt.setString(2, vo.getContent());
+			pstmt.setString(2, vo.getContents());
 			pstmt.setLong(3, vo.getId());
 
 			result = pstmt.executeUpdate();
@@ -105,7 +94,7 @@ public class BoardDao {
 	}
 	
 	// view로 조회한 게시글의 조회수 증가
-	public int updateHitCount(Long id) {
+	public int updateHit(Long id) {
 		int result = 0;
 		
 		try (
@@ -124,7 +113,7 @@ public class BoardDao {
 		return result;
 	}
 	
-	public int updateHierarchy(int[] hierNo) {
+	public int updateOrderNo(BoardVo vo) {
 		int result = 0;
 		
 		try (
@@ -132,8 +121,8 @@ public class BoardDao {
 			PreparedStatement pstmt = conn
 					.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
 		) {
-			pstmt.setInt(1, hierNo[0]);
-			pstmt.setInt(2, hierNo[1]);
+			pstmt.setInt(1, vo.getGroupNo());
+			pstmt.setInt(2, vo.getOrderNo());
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -192,7 +181,7 @@ public class BoardDao {
 				result.setUserId(userId);
 				result.setTitle(title);
 				result.setUserName(userName);
-				result.setContent(contents);
+				result.setContents(contents);
 				result.setHit(hit);
 				result.setGroupNo(groupNo);
 				result.setOrderNo(orderNo);
@@ -236,7 +225,7 @@ public class BoardDao {
 				vo.setUserId(userId);
 				vo.setUserName(userName);
 				vo.setTitle(title);
-				vo.setContent(contents);
+				vo.setContents(contents);
 				vo.setHit(hit);
 				vo.setRegDate(regDate);
 				vo.setDepth(depth);
