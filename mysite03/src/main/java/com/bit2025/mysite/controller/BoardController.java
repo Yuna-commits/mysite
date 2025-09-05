@@ -1,6 +1,6 @@
 package com.bit2025.mysite.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bit2025.mysite.common.Page;
 import com.bit2025.mysite.service.BoardService;
 import com.bit2025.mysite.vo.BoardVo;
 import com.bit2025.mysite.vo.UserVo;
@@ -23,28 +23,25 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
-	@RequestMapping({ "", "/{p}" })
-	public String index(@PathVariable(value = "p", required = false) Integer p, Model model) {
-		// reqPage : default 1
-		if (p == null) {
-			p = 1;
-		}
-		// BoardService에서 paging
-		Page page = boardService.getPage(p);
-		List<BoardVo> list = boardService.getContentsList(page);
-
-		model.addAttribute("pageCount", Page.PAGE_COUNT);
-		model.addAttribute("page", page);
-		model.addAttribute("list", list);
-
+	@RequestMapping("")
+	public String index(
+			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage, 
+			@RequestParam(value="kwd", required=true, defaultValue="") String keyword, 
+			Model model) {
+		// BoardService에서 페이지, 키워드 검색 수행
+		Map<String, Object> map = boardService.getContentsList(reqPage, keyword);
+		
+		model.addAttribute("map", map);
+		model.addAttribute("keyword", keyword);
+		
 		return "/board/index";
 	}
 
 	@RequestMapping("/view/{id}")
 	public String view(@PathVariable("id") Long id, Model model) {
-		BoardVo boardVo = boardService.getContentsView(id);
+		BoardVo boardVo = boardService.getContents(id);
 		model.addAttribute("boardVo", boardVo);
-
+		System.out.println(boardVo);
 		return "/board/view";
 	}
 
@@ -94,7 +91,7 @@ public class BoardController {
 			return "redirect:/user/login";
 		}
 
-		BoardVo boardVo = boardService.getContentsView(id);
+		BoardVo boardVo = boardService.getContents(id);
 		model.addAttribute("boardVo", boardVo);
 		
 		return "/board/reply";
@@ -121,14 +118,13 @@ public class BoardController {
 	public String modify(@PathVariable("id") Long id, Model model, HttpSession session) {
 		/**
 		 * Access Control
-		 * write처럼 login으로 리다이렉트하도록 수정 필요
 		 */
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
 		if (authUser == null) {
 			return "redirect:/";
 		}
 		
-		BoardVo boardVo = boardService.getContentsView(id, authUser.getId());
+		BoardVo boardVo = boardService.getContents(id, authUser.getId());
 		model.addAttribute("boardVo", boardVo);
 		
 		return "/board/modify";

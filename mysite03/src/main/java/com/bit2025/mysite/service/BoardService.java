@@ -1,6 +1,8 @@
 package com.bit2025.mysite.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,30 +17,23 @@ public class BoardService {
 	@Autowired
 	private BoardRepository boardRepository;
 
-	public void addContents(BoardVo boardVo) {
-		if (boardVo.getDepth() != null) {
-			boardRepository.updateOrderNo(boardVo);
-		} 
+	public Map<String, Object> getContentsList(Integer reqPage, String keyword) {
+		int totalBoard = boardRepository.count(keyword);
+		Page page = new Page(reqPage, totalBoard);
 		
-		boardRepository.insert(boardVo);
+		// 키워드에 해당하는 게시글 리스트 조회(키워드가 없으면 전체 게시글)
+		List<BoardVo> list = boardRepository.findAllByKeyword(keyword, page);
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		// 리스트 정보를 맵에 저장
+		map.put("list", list);
+		map.put("page", page);
+
+		return map;
 	}
 
-	public Page getPage(int reqPage) {
-		// 총 게시글 수
-		int totalBoard = boardRepository.count();
-		// 1. 페이지 계산
-		return new Page(reqPage, totalBoard);
-	}
-
-	public List<BoardVo> getContentsList(Page page) {
-		List<BoardVo> list = boardRepository.findAll(page.getOffset());
-		// 2. 계산 결과로 얻은 offset으로 select 쿼리 수행 -> list
-		return list;
-	}
-
-	public BoardVo getContentsView(Long id) {
+	public BoardVo getContents(Long id) {
 		BoardVo boardVo = boardRepository.findById(id);
-
 		if (boardVo != null) {
 			// 게시글 조회수 증가
 			boardRepository.updateHit(id);
@@ -47,9 +42,17 @@ public class BoardService {
 		return boardVo;
 	}
 
-	public BoardVo getContentsView(Long id, Long userId) {
+	public BoardVo getContents(Long id, Long userId) {
 		BoardVo boardVo = boardRepository.findByIdAndUserId(id, userId);
 		return boardVo;
+	}
+	
+	public void addContents(BoardVo boardVo) {
+		if (boardVo.getGroupNo() != null) {
+			boardRepository.updateOrderNo(boardVo);
+		} 
+		
+		boardRepository.insert(boardVo);
 	}
 
 	public void deleteContents(Long id, Long userId) {

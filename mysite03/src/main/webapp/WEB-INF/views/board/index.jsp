@@ -14,9 +14,8 @@
 		<div id="content">
 			<div id="board">
 				<!-- 게시글 검색 -->
-				<form id="search_form" action="${pageContext.request.contextPath }/board" method="post">
-					<input type="hidden" name="a" value="search">
-					<input type="text" id="kwd" name="kwd" value="">
+				<form id="search_form" action="${pageContext.request.contextPath }/board" method="get">
+					<input type="text" id="kwd" name="kwd" value="${keyword }">
 					<input type="submit" value="찾기">
 				</form>
 				
@@ -30,8 +29,8 @@
 						<th>&nbsp;</th>
 					</tr>				
 					<!-- 게시글 리스트 출력 -->
-					<c:set var="index" value="${page.totalBoard - page.offset }"></c:set>
-					<c:forEach var="vo" items="${list }" varStatus="status">
+					<c:set var="index" value="${map.page.totalBoard - map.page.offset }"></c:set>
+					<c:forEach var="vo" items="${map.list }" varStatus="status">
 						<tr>
 							<td>${index }</td>
 							<td style="text-align:left; padding-left:${(vo.depth) * 20 }px">
@@ -59,18 +58,18 @@
 				<div class="pager">
 					<ul>
 						<!-- prev 버튼은 이전 섹션의 첫 번째 페이지로 이동 -->
-						<c:if test="${page.prev }">
-							<li><a href="${pageContext.request.contextPath }/board/${page.startPage - pageCount}">◀</a></li>
+						<c:if test="${map.page.prev }">
+							<li><a href="${pageContext.request.contextPath }/board?p=${map.page.startPage - map.page.pageSize}&kwd=${keyword }">◀</a></li>
 						</c:if>
 						
-						<c:forEach var="num" begin="${page.startPage }" end="${page.endPage }">
-							<li <c:if test="${page.reqPage == num}"> class="selected"</c:if>>
-								<a href="${pageContext.request.contextPath }/board/${num}">${num }</a>
+						<c:forEach var="num" begin="${map.page.startPage }" end="${map.page.endPage }">
+							<li <c:if test="${map.page.reqPage == num}"> class="selected"</c:if>>
+								<a href="${pageContext.request.contextPath }/board?p=${num}&kwd=${keyword }">${num }</a>
 							</li>
 						</c:forEach>
 						<!-- next 버튼은 다음 섹션의 첫 번째 페이지로 이동 -->
-						<c:if test="${page.next }">
-							<li><a href="${pageContext.request.contextPath }/board/${page.endPage + 1 }">▶</a></li>
+						<c:if test="${map.page.next }">
+							<li><a href="${pageContext.request.contextPath }/board?p=${map.page.endPage + 1 }&kwd=${keyword }">▶</a></li>
 						</c:if>
 					</ul>
 				</div>
