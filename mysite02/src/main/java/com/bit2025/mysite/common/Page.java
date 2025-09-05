@@ -124,11 +124,11 @@ public class Page {
 		this.next = next;
 	}
 
-	public static int getPageSize() {
+	public int getPageSize() {
 		return PAGE_SIZE;
 	}
 
-	public static int getBoardSize() {
+	public int getBoardSize() {
 		return BOARD_SIZE;
 	}
 
