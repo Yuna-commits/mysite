@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.bit2025.mysite.vo.GuestbookVo;
@@ -58,14 +57,14 @@ public class GuestbookDao {
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
-					"select id, name, message, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by id desc");
+					"select id, name, message, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by reg_date desc");
 			ResultSet rs = pstmt.executeQuery();
 		) {
 			while (rs.next()) {
 				Long id = rs.getLong(1);
 				String name = rs.getString(2);
 				String message = rs.getString(3);
-				Date regDate = rs.getDate(4);
+				String regDate = rs.getString(4);
 
 				GuestbookVo vo = new GuestbookVo();
 				vo.setId(id);
