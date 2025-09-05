@@ -43,8 +43,8 @@
 						<c:if test="${authUser.id == boardVo.userId }">
 							<a href="${pageContext.request.contextPath }/board?a=modifyform&id=${boardVo.id }">글수정</a>
 						</c:if>
-						<a href="${pageContext.request.contextPath }/board?a=replyform&id=${boardVo.id }">답글등록</a>
 					</c:if>
+					<a href="${pageContext.request.contextPath }/board?a=replyform&id=${boardVo.id }">답글쓰기</a>
 					<a href="${pageContext.request.contextPath }/board">글목록</a>
 				</div>
 			</div>

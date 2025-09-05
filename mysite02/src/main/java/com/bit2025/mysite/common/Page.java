@@ -1,8 +1,8 @@
 package com.bit2025.mysite.common;
 
 public class Page {
-	public static final int PAGE_COUNT = 5; // 한 페이지에 보일 페이지의 수
-	public static final int BOARD_COUNT = 5;// 한 페이지에 보일 게시글의 수
+	public final static int PAGE_SIZE = 5; // 한 페이지에 보일 페이지의 수
+	public final static int BOARD_SIZE = 5;// 한 페이지에 보일 게시글의 수
 	
 	private int reqPage; // 사용자 요청 페이지
 	private int totalBoard; //총 게시글 수
@@ -27,21 +27,24 @@ public class Page {
 	 * section  [0] 	    [1] 
 	 * page [1 2 3 4 5] [6 7 8 9 10]
 	 */
+	public Page(int totalBoard) {
+		this(1, totalBoard);
+	}
+	
 	public Page(int reqPage, int totalBoard) {
 		this.reqPage = reqPage;
 		this.totalBoard = totalBoard;
 		
 		// 1. 총 페이지 수 계산
-		totalPage = totalBoard / BOARD_COUNT;
-		totalPage += (totalBoard % BOARD_COUNT == 0 ? 0 : 1);
+		totalPage = (int)Math.ceil((double) totalBoard / BOARD_SIZE);
 
 		// 2. offset 계산, reqPage 위치에 존재하는 게시글 추출에 필요
-		offset = (reqPage - 1) * BOARD_COUNT;
+		offset = (reqPage - 1) * BOARD_SIZE;
 
 		// 3. reqPage 범위 계산
-		section = (reqPage - 1) / PAGE_COUNT;
-		startPage = (section * PAGE_COUNT) + 1;
-		endPage = (section + 1) * PAGE_COUNT;
+		section = (reqPage - 1) / PAGE_SIZE;
+		startPage = (section * PAGE_SIZE) + 1;
+		endPage = (section + 1) * PAGE_SIZE;
 		endPage = (endPage > totalPage) ? totalPage : endPage;
 
 		// 4. 이전/다음 섹션이 있는지 확인
@@ -119,6 +122,14 @@ public class Page {
 
 	public void setNext(boolean next) {
 		this.next = next;
+	}
+
+	public static int getPageSize() {
+		return PAGE_SIZE;
+	}
+
+	public static int getBoardSize() {
+		return BOARD_SIZE;
 	}
 
 }

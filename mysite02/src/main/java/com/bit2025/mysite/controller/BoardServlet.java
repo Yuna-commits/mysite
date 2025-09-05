@@ -40,32 +40,57 @@ public class BoardServlet extends HttpServlet {
 			 */
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
-				redirectToLogin(request, response);
+				redirectToLogin(request, response, "writeform");
 				return;
 			}
 
 			UserVo authUser = (UserVo) session.getAttribute("authUser");
 			if (authUser == null) {// 로그인 안 한 사용자
-				redirectToLogin(request, response);
+				redirectToLogin(request, response, "writeform");
 				return;
 			}
 
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/writeform.jsp");
 			rd.forward(request, response);
-		} else if ("write".equals(action) || "reply".equals(action)) {
+		} else if("replyform".equals(action)) {
 			/**
 			 * Access Control
-			 * writeform(fail) -> login -> writeform
+			 * replyform(fail) -> login -> view
 			 */
+			
+			Long id = Long.parseLong(request.getParameter("id"));	
+			
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
-				redirectToLogin(request, response);
+				redirectToLogin(request, response, "view&id=" + id);
 				return;
 			}
 
 			UserVo authUser = (UserVo) session.getAttribute("authUser");
 			if (authUser == null) {// 로그인 안 한 사용자
-				redirectToLogin(request, response);
+				redirectToLogin(request, response, "view&id=" + id);
+				return;
+			}
+
+			BoardVo boardVo = new BoardDao().findById(id);
+			request.setAttribute("boardVo", boardVo);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/replyform.jsp");
+			rd.forward(request, response);
+		} else if ("write".equals(action) || "reply".equals(action)) {
+			/**
+			 * Access Control
+			 * redirect to main
+			 */
+			HttpSession session = request.getSession(false);
+			if (session == null) {// 로그인 세션이 없는 사용자
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+			if (authUser == null) {// 로그인 안 한 사용자
+				response.sendRedirect(request.getContextPath());
 				return;
 			}
 
@@ -96,45 +121,68 @@ public class BoardServlet extends HttpServlet {
 			
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board");
-		} else if("replyform".equals(action)) {
+		} else if ("delete".equals(action)) {
 			/**
 			 * Access Control
-			 * writeform(fail) -> login -> writeform
+			 * redirect to main
 			 */
 			HttpSession session = request.getSession(false);
 			if (session == null) {// 로그인 세션이 없는 사용자
-				redirectToLogin(request, response);
+				response.sendRedirect(request.getContextPath());
 				return;
 			}
 
 			UserVo authUser = (UserVo) session.getAttribute("authUser");
 			if (authUser == null) {// 로그인 안 한 사용자
-				redirectToLogin(request, response);
+				response.sendRedirect(request.getContextPath());
 				return;
 			}
 			
 			Long id = Long.parseLong(request.getParameter("id"));
-			
-			BoardVo boardVo = new BoardDao().findById(id);
-			request.setAttribute("boardVo", boardVo);
-			
-			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/replyform.jsp");
-			rd.forward(request, response);
-		} else if ("delete".equals(action)) {
-			Long id = Long.parseLong(request.getParameter("id"));
 
-			new BoardDao().deleteById(id);
+			new BoardDao().delete(id, authUser.getId());
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board");
 		} else if ("modifyform".equals(action)) {
+			/**
+			 * Access Control
+			 * redirect to main
+			 */
+			HttpSession session = request.getSession(false);
+			if (session == null) {// 로그인 세션이 없는 사용자
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+			if (authUser == null) {// 로그인 안 한 사용자
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+			
 			Long id = Long.parseLong(request.getParameter("id"));
-			BoardVo boardVo = new BoardDao().findById(id);
+			BoardVo boardVo = new BoardDao().findByIdAndUserId(id, authUser.getId());
 
 			request.setAttribute("boardVo", boardVo);
 
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/modifyform.jsp");
 			rd.forward(request, response);
 		} else if ("modify".equals(action)) {
+			/**
+			 * Access Control
+			 */
+			HttpSession session = request.getSession(false);
+			if (session == null) {// 로그인 세션이 없는 사용자
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+			if (authUser == null) {// 로그인 안 한 사용자
+				response.sendRedirect(request.getContextPath());
+				return;
+			}
+			
 			Long id = Long.parseLong(request.getParameter("id"));
 			String title = request.getParameter("title");
 			String contents = request.getParameter("contents");
@@ -147,29 +195,27 @@ public class BoardServlet extends HttpServlet {
 			new BoardDao().update(vo);
 			// redirect to mysite02/board
 			response.sendRedirect(request.getContextPath() + "/board?a=view&id=" + id);
-		} else if ("search".equals(action)) {
-			/**
-			 * 제목으로 게시글 검색
-			 */
-		} else {// Default action : 게시글 리스트 출력 + paging algorithm
-				// reqPage : default 1
-			int reqPage = 1;// Default
-			String sPage = request.getParameter("p");
-			if (sPage != null) {
-				reqPage = Integer.parseInt(sPage);
-			}
-
+		} else {
+			// Default action : 게시글 리스트 출력(검색 여부 확인) + paging algorithm
+			Page page = null;
 			BoardDao dao = new BoardDao();// 전체 게시글 수
-			int totalBoard = dao.count();
-
+			
+			String keyword = request.getParameter("kwd");
+			int totalBoard = dao.count(keyword);// 전체 출력 or 키워드 게시글 출력
+			
 			// 1. 페이지 계산
-			Page page = new Page(reqPage, totalBoard);
+			String sPage = request.getParameter("p");
+			if (sPage == null || sPage.isBlank()) {// page = 1
+				page = new Page(totalBoard);
+			} else {
+				page = new Page(Integer.parseInt(sPage), totalBoard);
+			}		
 
 			// 2. 계산 결과로 얻은 offset으로 select 쿼리 수행 -> list
-			List<BoardVo> list = dao.findAll(page.getOffset());
+			List<BoardVo> list = dao.findAllByKeyword(keyword, page.getOffset());
 
 			// 3. 쿼리 결과(데이터 테이블)와 페이징 결과 view에 매핑
-			request.setAttribute("pageCount", Page.PAGE_COUNT);
+			request.setAttribute("keyword", keyword);
 			request.setAttribute("page", page);
 			request.setAttribute("list", list);
 
@@ -178,10 +224,10 @@ public class BoardServlet extends HttpServlet {
 			rd.forward(request, response);
 		}
 	}
-	
 
-	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String targetUrl = request.getContextPath() + "/board?a=writeform";
+	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response, String action)
+			throws IOException {
+		String targetUrl = request.getContextPath() + "/board?a=" + action;
 		request.getSession(true).setAttribute("redirectUri", targetUrl);
 
 		response.sendRedirect(request.getContextPath() + "/user?a=loginform");

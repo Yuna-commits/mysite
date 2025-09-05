@@ -31,7 +31,6 @@ public class GuestbookServlet extends HttpServlet {
 
 			new GuestbookDao().insert(vo);
 
-			// Response
 			// redirect to localhost/mysite02/guestbook
 			response.sendRedirect(request.getContextPath()+"/guestbook");
 		} else if("deleteform".equals(action)) {

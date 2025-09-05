@@ -13,15 +13,27 @@ import com.bit2025.mysite.vo.BoardVo;
 
 public class BoardDao {
 	
-	public int count() {
+	public int count(String keyword) {
 		int result = 0;
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn
+			PreparedStatement pstmt1 = conn
 					.prepareStatement("select count(*) from board");
+			PreparedStatement pstmt2 = conn
+					.prepareStatement("select count(*) from board where title like ? or contents like ?");
 		) {
-			ResultSet rs = pstmt.executeQuery();
+			ResultSet rs = null;
+
+			if (keyword == null) {
+				rs = pstmt1.executeQuery();
+			} else {// 키워드 게시글
+				pstmt2.setString(1, "%" + keyword + "%");
+				pstmt2.setString(2, "%" + keyword + "%");
+				
+				rs = pstmt2.executeQuery();
+			}
+			
 			if(rs.next()) {
 				result = rs.getInt(1);
 			}
@@ -132,14 +144,15 @@ public class BoardDao {
 		return result;
 	}
 
-	public int deleteById(Long id) {
+	public int delete(Long id, Long userId) {
 		int result = 0;
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from board where id = ?");
+			PreparedStatement pstmt = conn.prepareStatement("delete from board where id = ? and user_id = ?");
 		) {
 			pstmt.setLong(1, id);
+			pstmt.setLong(2, userId);
 			
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -194,22 +207,84 @@ public class BoardDao {
 		return result;
 	}
 	
+	public BoardVo findByIdAndUserId(Long id, Long userId) {
+		BoardVo result = null;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+					"select title, user.name, contents, hit, g_no, o_no, depth "
+					+ "from board join user on board.user_id = user.id "
+					+ "where board.id = ? and user.id = ?");
+		) {
+			pstmt.setLong(1, id);
+			pstmt.setLong(2, userId);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				String title = rs.getString(1);
+				String userName = rs.getString(2);
+				String contents = rs.getString(3);
+				int hit = rs.getInt(4);
+				int groupNo = rs.getInt(5);
+				int orderNo = rs.getInt(6);
+				int depth = rs.getInt(7);
+
+				result = new BoardVo();
+				result.setId(id);
+				result.setUserId(userId);
+				result.setTitle(title);
+				result.setUserName(userName);
+				result.setContents(contents);
+				result.setHit(hit);
+				result.setGroupNo(groupNo);
+				result.setOrderNo(orderNo);
+				result.setDepth(depth);
+			}
+		} catch (SQLException e) {
+			System.err.println("DB 연결에 실패했습니다.");
+			System.err.println("오류: " + e.getMessage());
+		}
+
+		return result;
+	}
+	
 	// 전체 게시글 리스트 출력
-	public List<BoardVo> findAll(int offset) {
+	public List<BoardVo> findAllByKeyword(String keyword, int offset) {
 		List<BoardVo> result = new ArrayList<BoardVo>();
 
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(
+			PreparedStatement pstmt1 = conn.prepareStatement(
 					"select board.id, user.id, user.name, title, contents, hit, "
 					+ "date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate, depth "
 					+ "from board join user on board.user_id = user.id "
-					+ "order by g_no desc, o_no asc limit ? offset ?");
+					+ "order by g_no desc, o_no asc "
+					+ "limit ? offset ?");
+			PreparedStatement pstmt2 = conn.prepareStatement(
+					"select board.id, user.id, user.name, title, contents, hit, "
+					+ "date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate, depth "
+					+ "from board join user on board.user_id = user.id "
+					+ "where (title like ? or contents like ?) "
+					+ "order by g_no desc, o_no asc "
+					+ "limit ? offset ?");
 		) {
-			pstmt.setInt(1, Page.BOARD_COUNT);
-			pstmt.setInt(2, offset);
+			ResultSet rs = null;
 			
-			ResultSet rs = pstmt.executeQuery();
+			if(keyword == null) {
+				pstmt1.setInt(1, Page.BOARD_SIZE);
+				pstmt1.setInt(2, offset);	
+				
+				rs = pstmt1.executeQuery();
+			} else {// 키워드 게시글
+				pstmt2.setString(1, "%" + keyword + "%");
+				pstmt2.setString(2, "%" + keyword + "%");
+				pstmt2.setInt(3, Page.BOARD_SIZE);
+				pstmt2.setInt(4, offset);	
+				
+				rs = pstmt2.executeQuery();
+			}
+			 
 			while (rs.next()) {
 				Long id = rs.getLong(1);
 				Long userId = rs.getLong(2);

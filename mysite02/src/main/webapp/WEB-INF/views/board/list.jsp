@@ -14,9 +14,8 @@
 		<div id="content">
 			<div id="board">
 				<!-- 게시글 검색 -->
-				<form id="search_form" action="${pageContext.request.contextPath }/board" method="post">
-					<input type="hidden" name="a" value="search">
-					<input type="text" id="kwd" name="kwd" value="">
+				<form id="search_form" action="${pageContext.request.contextPath }/board" method="get">
+					<input type="text" id="kwd" name="kwd" value="${keyword }">
 					<input type="submit" value="찾기">
 				</form>
 				
@@ -46,7 +45,7 @@
 							<td>${vo.regDate }</td>
 							<!-- 게시글 작성자 == 로그인 사용자인 경우(글쓴이 본인)만 삭제 가능 -->
 							<td><c:if test="${authUser.id == vo.userId }">
-									<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id }"
+									<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id }&userId=${vo.userId }"
 										class="del" style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>
 									</a>
 							</c:if></td>
@@ -60,17 +59,17 @@
 					<ul>
 						<!-- prev 버튼은 이전 섹션의 첫 번째 페이지로 이동 -->
 						<c:if test="${page.prev }">
-							<li><a href="${pageContext.request.contextPath }/board?p=${page.startPage - pageCount }">◀</a></li>
+							<li><a href="${pageContext.request.contextPath }/board?p=${page.startPage - page.pageSize }&kwd=${keyword }">◀</a></li>
 						</c:if>
 						
 						<c:forEach var="num" begin="${page.startPage }" end="${page.endPage }">
 							<li <c:if test="${page.reqPage == num}"> class="selected"</c:if>>
-								<a href="${pageContext.request.contextPath }/board?p=${num}">${num }</a>
+								<a href="${pageContext.request.contextPath }/board?p=${num}&kwd=${keyword }">${num }</a>
 							</li>
 						</c:forEach>
 						<!-- next 버튼은 다음 섹션의 첫 번째 페이지로 이동 -->
 						<c:if test="${page.next }">
-							<li><a href="${pageContext.request.contextPath }/board?p=${page.endPage + 1 }">▶</a></li>
+							<li><a href="${pageContext.request.contextPath }/board?p=${page.endPage + 1 }&kwd=${keyword }">▶</a></li>
 						</c:if>
 					</ul>
 				</div>
