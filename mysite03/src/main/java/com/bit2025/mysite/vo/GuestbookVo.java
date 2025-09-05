@@ -7,7 +7,7 @@ public class GuestbookVo {
 	private String name;
 	private String password;
 	private String message;
-	private Date regDate;
+	private String regDate;
 
 	public Long getId() {
 		return id;
@@ -41,11 +41,11 @@ public class GuestbookVo {
 		this.message = message;
 	}
 
-	public Date getRegDate() {
+	public String getRegDate() {
 		return regDate;
 	}
 
-	public void setRegDate(Date regDate) {
+	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
 

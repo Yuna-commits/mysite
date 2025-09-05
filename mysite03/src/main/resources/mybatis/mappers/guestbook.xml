@@ -2,6 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="guestbook">
-	<select id="findAll">
+	<select id="findAll" resultType="guestbookvo">
+		<![CDATA[
+			select id,
+			   	   name,
+			       message, 
+			       date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate
+			from guestbook 
+			order by reg_date desc
+		]]>
 	</select>
+	
+	<insert id="insert" parameterType="guestbookvo">
+		<![CDATA[
+			insert 
+			into guestbook 
+			values(null, #{name}, password(#{password}), #{message}, now())
+		]]>
+	</insert>
+	
+	<delete id="deleteByIdAndPassword" parameterType="map">
+		<![CDATA[
+			delete 
+			from guestbook 
+			where id=#{id} and password=password(#{password})
+		]]>
+	</delete>
 </mapper>
