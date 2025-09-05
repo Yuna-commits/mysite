@@ -1,7 +1,5 @@
 package com.bit2025.mysite.vo;
 
-import java.util.Date;
-
 public class GuestbookVo {
 	private Long id;
 	private String name;
