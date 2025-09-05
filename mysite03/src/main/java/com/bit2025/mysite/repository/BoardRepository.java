@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -47,41 +46,30 @@ public class BoardRepository {
 
 		try (
 			Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn
-					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), "
+			PreparedStatement pstmt1 = conn
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, now(), "
 							+ "(ifnull((select max(g_no) from board as sub_board), 0)+1), 1, 0)");
+			PreparedStatement pstmt2 = conn
+					.prepareStatement("insert into board values(null, ?, ?, ?, 0, now(), ?, ?, ?)");
 		) {
-			// Parameter Binding
-			pstmt.setLong(1, vo.getUserId());
-			pstmt.setString(2, vo.getTitle());
-			pstmt.setString(3, vo.getContents());
+			if (vo.getGroupNo() == null) { // 새 글 작성
+				// Parameter Binding
+				pstmt1.setLong(1, vo.getUserId());
+				pstmt1.setString(2, vo.getTitle());
+				pstmt1.setString(3, vo.getContents());
 
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("DB 연결에 실패했습니다.");
-			System.err.println("오류: " + e.getMessage());
-		}
+				result = pstmt1.executeUpdate();
+			} else {// 답글 작성
+				// Parameter Binding
+				pstmt2.setLong(1, vo.getUserId());
+				pstmt2.setString(2, vo.getTitle());
+				pstmt2.setString(3, vo.getContents());
+				pstmt2.setInt(4, vo.getGroupNo());
+				pstmt2.setInt(5, vo.getOrderNo() + 1);
+				pstmt2.setInt(6, vo.getDepth() + 1);
 
-		return result;
-	}
-	
-	public int insertReply(BoardVo vo) {
-		int result = 0;
-
-		try (
-			Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn
-					.prepareStatement("insert into board values(null, ?, ?, ?, 0, current_date(), ?, ?, ?)");
-		) {
-			// Parameter Binding
-			pstmt.setLong(1, vo.getUserId());
-			pstmt.setString(2, vo.getTitle());
-			pstmt.setString(3, vo.getContents());
-			pstmt.setInt(4, vo.getGroupNo());
-			pstmt.setInt(5, vo.getOrderNo() + 1);
-			pstmt.setInt(6, vo.getDepth() + 1);
-
-			result = pstmt.executeUpdate();
+				result = pstmt2.executeUpdate();
+			}
 		} catch (SQLException e) {
 			System.err.println("DB 연결에 실패했습니다.");
 			System.err.println("오류: " + e.getMessage());
@@ -132,7 +120,7 @@ public class BoardRepository {
 		return result;
 	}
 	
-	public int updateOrderNo(BoardVo boardVo) {
+	public int updateOrderNo(BoardVo vo) {
 		int result = 0;
 		
 		try (
@@ -140,8 +128,8 @@ public class BoardRepository {
 			PreparedStatement pstmt = conn
 					.prepareStatement("update board set o_no = o_no + 1 where g_no = ? and o_no > ?");
 		) {
-			pstmt.setInt(1, boardVo.getGroupNo());
-			pstmt.setInt(2, boardVo.getOrderNo());
+			pstmt.setInt(1, vo.getGroupNo());
+			pstmt.setInt(2, vo.getOrderNo());
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -264,7 +252,8 @@ public class BoardRepository {
 		try (
 			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
-					"select board.id, user.id, user.name, title, contents, hit, reg_date, depth "
+					"select board.id, user.id, user.name, title, contents, hit, "
+					+ "date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate, depth "
 					+ "from board join user on board.user_id = user.id "
 					+ "order by g_no desc, o_no asc limit ? offset ?");
 		) {
@@ -279,7 +268,7 @@ public class BoardRepository {
 				String title = rs.getString(4);
 				String contents = rs.getString(5);
 				int hit = rs.getInt(6);
-				Date regDate = rs.getDate(7);
+				String regDate = rs.getString(7);
 				int depth = rs.getInt(8);
 
 				BoardVo vo = new BoardVo();

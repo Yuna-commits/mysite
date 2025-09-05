@@ -18,10 +18,9 @@ public class BoardService {
 	public void addContents(BoardVo boardVo) {
 		if (boardVo.getDepth() != null) {
 			boardRepository.updateOrderNo(boardVo);
-			boardRepository.insertReply(boardVo);
-		} else {
-			boardRepository.insert(boardVo);
-		}
+		} 
+		
+		boardRepository.insert(boardVo);
 	}
 
 	public Page getPage(int reqPage) {

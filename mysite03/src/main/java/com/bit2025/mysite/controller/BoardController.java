@@ -82,6 +82,24 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
+	@RequestMapping(value = "/reply/{id}", method = RequestMethod.GET)
+	public String reply(@PathVariable("id") Long id, Model model, HttpSession session) {
+		/**
+		 * Access Control
+		 * reply(fail) -> login(GET) -> reply
+		 */
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if (authUser == null) {
+			session.setAttribute("redirectUri", "redirect:/board/reply/" + id);
+			return "redirect:/user/login";
+		}
+
+		BoardVo boardVo = boardService.getContentsView(id);
+		model.addAttribute("boardVo", boardVo);
+		
+		return "/board/reply";
+	}
+	
 	@RequestMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Long boardId, HttpSession session) {
 		/**
@@ -130,23 +148,5 @@ public class BoardController {
 		boardService.modifyContents(boardVo);
 
 		return "redirect:/board/view/" + boardVo.getId();
-	}
-
-	@RequestMapping(value = "/reply/{id}", method = RequestMethod.GET)
-	public String reply(@PathVariable("id") Long id, Model model, HttpSession session) {
-		/**
-		 * Access Control
-		 * reply(fail) -> login(GET) -> reply
-		 */
-		UserVo authUser = (UserVo) session.getAttribute("authUser");
-		if (authUser == null) {
-			session.setAttribute("redirectUri", "redirect:/board/reply/" + id);
-			return "redirect:/user/login";
-		}
-
-		BoardVo boardVo = boardService.getContentsView(id);
-		model.addAttribute("boardVo", boardVo);
-		
-		return "/board/reply";
 	}
 }
