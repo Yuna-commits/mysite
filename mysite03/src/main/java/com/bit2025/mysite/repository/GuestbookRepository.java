@@ -11,7 +11,6 @@ import com.bit2025.mysite.vo.GuestbookVo;
 
 @Repository
 public class GuestbookRepository {
-
 	@Autowired
 	private SqlSession sqlSession;
 
