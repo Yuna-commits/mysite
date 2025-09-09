@@ -20,6 +20,8 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**"/>
+			<!-- DefaultServletHttpRequestHandler 제외 -->
+			<mvc:exclude-mapping path="/assets/**"/>
 			<bean class="com.bit2025.mysite.security.AuthInterceptor"/>
 		</mvc:interceptor>
 	</mvc:interceptors>

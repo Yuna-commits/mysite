@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bit2025.mysite.security.Auth;
+import com.bit2025.mysite.security.AuthUser;
 import com.bit2025.mysite.service.UserService;
 import com.bit2025.mysite.vo.UserVo;
 
@@ -62,12 +63,7 @@ public class UserController {
 		// 로그인 성공
 		session.setAttribute("authUser", authUser);
 		
-		String redirectUri = (String) session.getAttribute("redirectUri");
-		if(userService.isValidAccess(session)) {
-			return redirectUri;
-		} else {
-			return "redirect:/";
-		}
+		return "redirect:/";
 	}
 
 	@RequestMapping("/logout")
@@ -82,19 +78,8 @@ public class UserController {
 	// updateform
 	@Auth
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
-	public String update(Model model, HttpSession session) {
-		/**
-		 * Access Control
-		 * redirect는 항상 GET 요청
-		 * update(fail) -> login(GET) -> update
-		 * 파라미터로 session이 주입되어 널 체크 필요 x, 자동으로 새 세션이 생성됨
-		 */
-		UserVo authUser = (UserVo) session.getAttribute("authUser");
-		if (authUser == null) {
-			session.setAttribute("redirectUri", "redirect:/user/update");
-			return "redirect:/user/login";
-		}
-
+	public String update(@AuthUser UserVo authUser, Model model) {
+		// @Auth으로 Access Control
 		Long id = authUser.getId();
 		UserVo userVo = userService.getUser(id);
 

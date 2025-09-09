@@ -31,16 +31,5 @@ public class UserService {
 	public void updateUser(UserVo userVo) {
 		userRepository.update(userVo);
 	}
-	
-	public boolean isValidAccess(HttpSession session) {
-		String redirectUri = (String) session.getAttribute("redirectUri");
-		session.removeAttribute("redirectUri");
-		
-		if (redirectUri == null) {
-			return false;
-		}
-
-		return true;
-	}
 
 }
