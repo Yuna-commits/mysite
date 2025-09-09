@@ -44,7 +44,7 @@
 	
 	<select id="findById" parameterType="long" resultType="uservo">
 		<![CDATA[
-			select id, name, email, gender, role 
+			select id, name, email, gender
 			from user 
 			where id = #{id}
 		]]>
