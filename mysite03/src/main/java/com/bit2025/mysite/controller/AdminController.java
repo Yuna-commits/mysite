@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bit2025.mysite.security.Auth;
 
-@Auth(role="ADMIN")
 @Controller
 @RequestMapping("/admin")
+@Auth(role="ADMIN")
 public class AdminController {
 
 	@RequestMapping({ "", "/" })
