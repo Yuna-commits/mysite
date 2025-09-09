@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.bit2025.mysite.security.Auth;
 import com.bit2025.mysite.service.UserService;
 import com.bit2025.mysite.vo.UserVo;
 
@@ -79,6 +80,7 @@ public class UserController {
 	}
 	
 	// updateform
+	@Auth
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public String update(Model model, HttpSession session) {
 		/**
