@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,8 +39,8 @@ public class BoardController {
 	}
 
 	@RequestMapping("/view/{id}")
-	public String view(@PathVariable("id") Long boardId, Model model) {
-		BoardVo boardVo = boardService.getContents(boardId);
+	public String view(@PathVariable("id") Long id, Model model) {
+		BoardVo boardVo = boardService.getContents(id);
 		model.addAttribute("boardVo", boardVo);
 
 		return "/board/view";
@@ -56,11 +57,11 @@ public class BoardController {
 	@Auth
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
 	public String write(
-			BoardVo boardVo, 
 			@AuthUser UserVo authUser,
-			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage, 
-			@RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
-		
+			@ModelAttribute BoardVo boardVo,
+			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage,
+			@RequestParam(value = "kwd", required = true, defaultValue = "") String keyword) {
+
 		boardVo.setUserId(authUser.getId());
 		boardService.addContents(boardVo);
 		
@@ -69,8 +70,8 @@ public class BoardController {
 	
 	@Auth
 	@RequestMapping(value = "/reply/{id}", method = RequestMethod.GET)
-	public String reply(@PathVariable("id") Long boardId, Model model) {
-		BoardVo boardVo = boardService.getContents(boardId);
+	public String reply(@PathVariable("id") Long id, Model model) {
+		BoardVo boardVo = boardService.getContents(id);
 		model.addAttribute("boardVo", boardVo);
 		
 		return "/board/reply";
@@ -80,10 +81,10 @@ public class BoardController {
 	@RequestMapping("/delete/{id}")
 	public String delete(
 			@AuthUser UserVo authUser, 
-			@PathVariable("id") Long boardId, 
+			@PathVariable("id") Long id, 
 			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage, 
 			@RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
-		boardService.deleteContents(boardId, authUser.getId());
+		boardService.deleteContents(id, authUser.getId());
 		
 		return "redirect:/board";
 	}
@@ -91,8 +92,8 @@ public class BoardController {
 	// modifyform
 	@Auth
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
-	public String modify(@PathVariable("id") Long boardId, @AuthUser UserVo authUser, Model model) {
-		BoardVo boardVo = boardService.getContents(boardId, authUser.getId());
+	public String modify(@PathVariable("id") Long id, @AuthUser UserVo authUser, Model model) {
+		BoardVo boardVo = boardService.getContents(id, authUser.getId());
 		model.addAttribute("boardVo", boardVo);
 		
 		return "/board/modify";

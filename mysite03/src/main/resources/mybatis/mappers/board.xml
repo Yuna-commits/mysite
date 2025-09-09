@@ -36,7 +36,7 @@
 				]]>
 			</otherwise>
 		</choose>
-		<selectKey keyProperty="id" resultType="Long" order="AFTER">
+		<selectKey keyProperty="id" resultType="long" order="AFTER">
 			<![CDATA[
 				select last_insert_id() from dual
 			]]>
@@ -55,7 +55,7 @@
 		<![CDATA[
 			update board 
 			set hit = hit + 1 
-			where id = #{boardId}
+			where id = #{id}
 		]]>
 	</update>
 	
@@ -69,7 +69,7 @@
 	
 	<delete id="delete" parameterType="map">
 		<![CDATA[
-			delete from board where id = #{boardId} and user_id = #{userId}
+			delete from board where id = #{id} and user_id = #{userId}
 		]]>
 	</delete>
 	
@@ -102,7 +102,7 @@
 				   depth 
 			from board 
 			join user on board.user_id = user.id 
-			where board.id = #{boardId} and user.id = #{userId}
+			where board.id = #{id} and user.id = #{userId}
 		]]>
 	</select>
 	
