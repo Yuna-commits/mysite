@@ -13,10 +13,6 @@ public class Page {
 	private int endPage; // 요청 페이지 section의 끝 번호
 	private boolean prev, next; // 이전/다음 section 존재 여부 -> 존재하면 화살표 표시
 
-	public Page(int totalBoard) {
-		this(1, totalBoard);
-	}
-	
 	public Page(int reqPage, int totalBoard) {
 		this.reqPage = reqPage;
 		this.totalBoard = totalBoard;
@@ -42,72 +38,36 @@ public class Page {
 		return reqPage;
 	}
 
-	public void setReqPage(int reqPage) {
-		this.reqPage = reqPage;
-	}
-
 	public int getTotalBoard() {
 		return totalBoard;
-	}
-
-	public void setTotalBoard(int totalBoard) {
-		this.totalBoard = totalBoard;
 	}
 
 	public int getTotalPage() {
 		return totalPage;
 	}
 
-	public void setTotalPage(int totalPage) {
-		this.totalPage = totalPage;
-	}
-
 	public int getOffset() {
 		return offset;
-	}
-
-	public void setOffset(int offset) {
-		this.offset = offset;
 	}
 
 	public int getSection() {
 		return section;
 	}
 
-	public void setSection(int section) {
-		this.section = section;
-	}
-
 	public int getStartPage() {
 		return startPage;
-	}
-
-	public void setStartPage(int startPage) {
-		this.startPage = startPage;
 	}
 
 	public int getEndPage() {
 		return endPage;
 	}
 
-	public void setEndPage(int endPage) {
-		this.endPage = endPage;
-	}
-
 	public boolean isPrev() {
 		return prev;
 	}
 
-	public void setPrev(boolean prev) {
-		this.prev = prev;
-	}
-
 	public boolean isNext() {
 		return next;
-	}
-
-	public void setNext(boolean next) {
-		this.next = next;
 	}
 
 	public int getPageSize() {

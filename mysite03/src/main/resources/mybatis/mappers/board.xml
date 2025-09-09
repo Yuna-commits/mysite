@@ -31,15 +31,8 @@
 			<otherwise>
 				<![CDATA[
 					insert into board 
-					values(null,
-						   #{userId}, 
-						   #{title},
-						   #{contents}, 
-						   0, 
-						   now(), 
-						   #{groupNo}, 
-						   #{orderNo}+1, 
-						   #{depth}+1)
+					values(null, #{userId}, #{title}, #{contents}, 0, now(), 
+						   #{groupNo}, #{orderNo}+1, #{depth}+1)
 				]]>
 			</otherwise>
 		</choose>
@@ -83,7 +76,7 @@
 	<select id="findById" parameterType="long" resultType="boardVo">
 		<![CDATA[
 			select board.id,
-				   board.user_id as userId, 
+				   user.id as userId, 
 				   user.name as userName, 
 				   title, 
 				   contents, 
@@ -101,7 +94,7 @@
 		<![CDATA[
 			select board.id,
 				   title, 
-				   user.name, 
+				   user.name as userName, 
 				   contents, 
 				   hit, 
 				   g_no as groupNo,

@@ -41,7 +41,7 @@ public class BoardController {
 	public String view(@PathVariable("id") Long id, Model model) {
 		BoardVo boardVo = boardService.getContents(id);
 		model.addAttribute("boardVo", boardVo);
-		System.out.println(boardVo);
+
 		return "/board/view";
 	}
 

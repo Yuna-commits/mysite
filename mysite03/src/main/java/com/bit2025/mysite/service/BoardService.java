@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bit2025.mysite.common.Page;
 import com.bit2025.mysite.repository.BoardRepository;
@@ -34,6 +35,7 @@ public class BoardService {
 
 	public BoardVo getContents(Long id) {
 		BoardVo boardVo = boardRepository.findById(id);
+		
 		if (boardVo != null) {
 			// 게시글 조회수 증가
 			boardRepository.updateHit(id);
@@ -43,10 +45,10 @@ public class BoardService {
 	}
 
 	public BoardVo getContents(Long id, Long userId) {
-		BoardVo boardVo = boardRepository.findByIdAndUserId(id, userId);
-		return boardVo;
+		return boardRepository.findByIdAndUserId(id, userId);
 	}
 	
+	@Transactional
 	public void addContents(BoardVo boardVo) {
 		if (boardVo.getGroupNo() != null) {
 			boardRepository.updateOrderNo(boardVo);
