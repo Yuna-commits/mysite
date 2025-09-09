@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import com.bit2025.mysite.repository.UserRepository;
 import com.bit2025.mysite.vo.UserVo;
 
-import jakarta.servlet.http.HttpSession;
-
 @Service
 public class UserService {
 
@@ -19,13 +17,13 @@ public class UserService {
 	}
 
 	public UserVo getUser(Long id) {
-		// 모든 정보 조회
+		// 모든 정보 조회 : update
 		return userRepository.findById(id);
 	}
-
-	public UserVo getUser(UserVo userVo) {
-		// id, name 조회
-		return userRepository.findByEmailAndPassword(userVo.getEmail(), userVo.getPassword());
+	
+	public UserVo getUser(String email, String password) {
+		// login
+		return userRepository.findByEmailAndPassword(email, password);
 	}
 
 	public void updateUser(UserVo userVo) {

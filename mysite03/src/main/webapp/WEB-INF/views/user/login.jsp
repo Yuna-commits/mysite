@@ -13,15 +13,15 @@
 		<div id="content">
 			<div id="user">
 				<form id="login-form" name="loginform" method="post"
-					action="${pageContext.request.contextPath }/user/login">
+					action="${pageContext.request.contextPath }/user/auth">
 					<!-- 데이터 입력 -->
 					<label class="block-label" for="email">이메일</label> 
 					<!-- 로그인 실패한 경우 email not empty -->
-					<input id="email" name="email" type="text" value="${userVo.email }"> 
+					<input id="email" name="email" type="text" value="${email }"> 
 					<label class="block-label">패스워드</label> 
 					<input name="password" type="password" value="">
 
-					<c:if test="${not empty userVo }">
+					<c:if test="${not empty email }">
 						<p>로그인이 실패 했습니다.</p>
 					</c:if>
 
