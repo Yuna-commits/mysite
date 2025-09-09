@@ -38,14 +38,14 @@
 								<c:if test="${vo.depth > 0 }">
 									<img src="${pageContext.request.contextPath }/assets/images/reply.png">
 								</c:if>	
-								<a href="${pageContext.request.contextPath }/board/view/${vo.id }">${vo.title }</a>
+								<a href="${pageContext.request.contextPath }/board/view/${vo.id }?p=${map['page'].reqPage }&kwd=${map.keyword }">${vo.title }</a>
 							</td>
 							<td>${vo.userName }</td>
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
 							<!-- 게시글 작성자 == 로그인 사용자인 경우(글쓴이 본인)만 삭제 가능 -->
 							<td><c:if test="${not empty authUser && authUser.id == vo.userId }">
-									<a href="${pageContext.request.contextPath }/board/delete/${vo.id }"
+									<a href="${pageContext.request.contextPath }/board/delete/${vo.id }?p=${map['page'].reqPage }&kwd=${map.keyword }"
 										class="del" style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>
 									</a>
 							</c:if></td>
@@ -75,7 +75,7 @@
 				</div>
 
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board/write" id="new-book">글쓰기</a>
+					<a href="${pageContext.request.contextPath }/board/write?p=${map['page'].reqPage }&kwd=${map.keyword }" id="new-book">글쓰기</a>
 				</div>
 			</div>
 		</div>

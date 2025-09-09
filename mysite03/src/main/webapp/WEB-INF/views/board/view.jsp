@@ -41,11 +41,11 @@
 				<div class="bottom">
 					<c:if test="${not empty authUser }">
 						<c:if test="${authUser.id == boardVo.userId }">
-							<a href="${pageContext.request.contextPath }/board/modify/${boardVo.id }">글수정</a>
+							<a href="${pageContext.request.contextPath }/board/modify/${boardVo.id }?p=${param.p }&kwd=${param.kwd }">글수정</a>
 						</c:if>
-						<a href="${pageContext.request.contextPath }/board/reply/${boardVo.id }">답글달기</a>
+						<a href="${pageContext.request.contextPath }/board/reply/${boardVo.id }?p=${param.p }&kwd=${param.kwd }">답글달기</a>
 					</c:if>
-					<a href="${pageContext.request.contextPath }/board">글목록</a>
+					<a href="${pageContext.request.contextPath }/board?p=${param.p }&kwd=${param.kwd }">글목록</a>
 				</div>
 			</div>
 		</div>
