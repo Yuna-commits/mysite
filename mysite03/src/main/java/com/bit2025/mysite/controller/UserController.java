@@ -80,6 +80,7 @@ public class UserController {
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public String update(@AuthUser UserVo authUser, Model model) {
 		// @Auth으로 Access Control
+		// AuthUserHandlerMehtodArgumentResolver로 @AuthUser이면 authUser 정보 가져옴
 		Long id = authUser.getId();
 		UserVo userVo = userService.getUser(id);
 
@@ -88,17 +89,13 @@ public class UserController {
 		return "user/update";
 	}
 	
+	/**
+	 * authUser : 인증받은 사용자 정보
+	 * userVo : form에 입력된 사용자 정보
+	 */
+	@Auth
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(UserVo userVo, HttpSession session) {
-		/**
-		 * Access Control
-		 */
-		UserVo authUser = (UserVo) session.getAttribute("authUser");
-		if (authUser == null) {
-			session.setAttribute("redirectUri", "redirect:/user/update");
-			return "redirect:/user/login";
-		}
-
+	public String update(@AuthUser UserVo authUser, UserVo userVo) {
 		userVo.setId(authUser.getId());
 		userService.updateUser(userVo);
 

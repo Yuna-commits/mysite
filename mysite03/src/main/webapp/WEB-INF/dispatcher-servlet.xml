@@ -11,7 +11,12 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- validator, conversionService, messageConverter를 자동으로 등록 -->
-	<mvc:annotation-driven />
+	<mvc:annotation-driven>
+		<!-- Argument Resolver 등록 -->
+		<mvc:argument-resolvers>
+			<bean class="com.bit2025.mysite.security.AuthUserHandlerMehtodArgumentResolver"/>
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
 
 	<!-- 서블릿 컨테이너(Tomcat)의 Default Servlet 위임 핸들러 -->
 	<mvc:default-servlet-handler />
@@ -35,7 +40,5 @@
 	   <property name="prefix" value="/WEB-INF/views/" />
 	   <property name="suffix" value=".jsp" />
 	</bean>
-
-	
 	
 </beans>

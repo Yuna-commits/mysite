@@ -33,19 +33,19 @@ public class BoardService {
 		return map;
 	}
 
-	public BoardVo getContents(Long id) {
-		BoardVo boardVo = boardRepository.findById(id);
+	public BoardVo getContents(Long boardId) {
+		BoardVo boardVo = boardRepository.findById(boardId);
 		
 		if (boardVo != null) {
 			// 게시글 조회수 증가
-			boardRepository.updateHit(id);
+			boardRepository.updateHit(boardId);
 		}
 
 		return boardVo;
 	}
 
-	public BoardVo getContents(Long id, Long userId) {
-		return boardRepository.findByIdAndUserId(id, userId);
+	public BoardVo getContents(Long boardId, Long userId) {
+		return boardRepository.findByIdAndUserId(boardId, userId);
 	}
 	
 	@Transactional
@@ -57,8 +57,8 @@ public class BoardService {
 		boardRepository.insert(boardVo);
 	}
 
-	public void deleteContents(Long id, Long userId) {
-		boardRepository.delete(id, userId);
+	public void deleteContents(Long boardId, Long userId) {
+		boardRepository.delete(boardId, userId);
 	}
 
 	public void modifyContents(BoardVo boardVo) {

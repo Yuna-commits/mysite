@@ -30,30 +30,30 @@ public class BoardRepository {
 	}
 
 	// view로 조회한 게시글의 조회수 증가
-	public int updateHit(Long id) {
-		return sqlSession.update("board.updateHit", id);
+	public int updateHit(Long boardId) {
+		return sqlSession.update("board.updateHit", boardId);
 	}
 
 	public int updateOrderNo(BoardVo boardVo) {
 		return sqlSession.update("board.updateOrderNo", boardVo);
 	}
 
-	public int delete(Long id, Long userId) {
+	public int delete(Long boardId, Long userId) {
 		Map<String, Long> map = new HashMap<String, Long>();
-		map.put("id", id);
+		map.put("boardId", boardId);
 		map.put("userId", userId);
 		
 		return sqlSession.delete("board.delete", map);
 	}
 
 	// 게시글 id로 게시글의 내용 보기
-	public BoardVo findById(Long id) {
-		return sqlSession.selectOne("board.findById", id);
+	public BoardVo findById(Long boardId) {
+		return sqlSession.selectOne("board.findById", boardId);
 	}
 
-	public BoardVo findByIdAndUserId(Long id, Long userId) {
+	public BoardVo findByIdAndUserId(Long boardId, Long userId) {
 		Map<String, Long> map = new HashMap<String, Long>();
-		map.put("id", id);
+		map.put("id", boardId);
 		map.put("userId", userId);
 		
 		return sqlSession.selectOne("board.findByIdAndUserId", map);
