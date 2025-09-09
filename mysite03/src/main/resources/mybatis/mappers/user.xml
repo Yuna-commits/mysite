@@ -36,15 +36,15 @@
 
 	<select id="findByEmailAndPassword" parameterType="map" resultType="uservo">
 		<![CDATA[
-			select id, name 
+			select id, name, role 
 			from user 
 			where email = #{email} and password = password(#{password})
 		]]>
 	</select>
 	
-	<select id="findById" parameterType="Long" resultType="uservo">
+	<select id="findById" parameterType="long" resultType="uservo">
 		<![CDATA[
-			select id, name, email, gender 
+			select id, name, email, gender, role 
 			from user 
 			where id = #{id}
 		]]>
