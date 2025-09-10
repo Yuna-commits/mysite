@@ -34,12 +34,12 @@ public class AuthUserHandlerMehtodArgumentResolver implements HandlerMethodArgum
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		// @AuthUser UserVo가 아닌 경우
+		// 메서드의 파라미터가 @AuthUser UserVo가 아닌 경우
 		if (!supportsParameter(parameter)) {
 			return WebArgumentResolver.UNRESOLVED;
 		}
 
-		// parameter : @AuthUser UserVo인 경우
+		// @AuthUser UserVo인 경우
 		HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 		HttpSession session = request.getSession();
 		
