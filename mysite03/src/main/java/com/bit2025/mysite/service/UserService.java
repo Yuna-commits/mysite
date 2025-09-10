@@ -21,6 +21,10 @@ public class UserService {
 		return userRepository.findById(id);
 	}
 	
+	public UserVo getUser(String email) {
+		return userRepository.findByEmail(email);
+	}
+	
 	public UserVo getUser(String email, String password) {
 		// login
 		return userRepository.findByEmailAndPassword(email, password);

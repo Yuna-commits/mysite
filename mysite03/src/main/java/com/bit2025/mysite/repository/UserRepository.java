@@ -22,11 +22,16 @@ public class UserRepository {
 		return sqlSession.update("user.update", vo);
 	}
 
+	public UserVo findById(Long id) {
+		return sqlSession.selectOne("user.findById", id);
+	}
+
+	public UserVo findByEmail(String email) {
+		return sqlSession.selectOne("user.findByEmail", email);
+	}
+
 	public UserVo findByEmailAndPassword(String email, String password) {
 		return sqlSession.selectOne("user.findByEmailAndPassword", Map.of("email", email, "password", password));
 	}
 
-	public UserVo findById(Long id) {
-		return sqlSession.selectOne("user.findById", id);
-	}
 }

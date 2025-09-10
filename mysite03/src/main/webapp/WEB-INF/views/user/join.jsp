@@ -10,8 +10,24 @@
 <script>
 $(function() {
 	<!-- id="check-button"을 누르면 click event -->
-	$("#check-button").click(function(){
-		console.log("click!!");
+	$("#check-button").click(function() {
+		var email = $("#email").val();
+		$.ajax({
+				url: "/mysite03/api/user/checkemail?email=" + email,		
+				type : "get",
+				dataType : "json",
+				success : function(response) {
+					if(response.exist) {
+						alert("이메일이 존재합니다. 다른 이메일을 사용해 주세요.");
+						$("#email").val("");
+						$("#email").focus();
+						return;
+					}
+					
+					$("#check-img").show();
+					$("#check-button").hide();
+				}
+		});
 	});
 });
 </script>
@@ -29,6 +45,7 @@ $(function() {
 					<label class="block-label" for="email">이메일</label>
 					<input id="email" name="email" type="text" value="">
 					<!-- 이메일 중복 체크 -->
+					<img id="check-img" src="${pageContext.request.contextPath }/assets/images/check.png" style="vertical-align:bottom; width:24px; display: none;">
 					<input id="check-button" type="button" value="이메일 체크">
 					
 					<label class="block-label">비밀번호</label>
