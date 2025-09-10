@@ -6,13 +6,21 @@
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link href="${pageContext.request.contextPath }/assets/css/user.css" rel="stylesheet" type="text/css">
+<script src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
+<script>
+$(function() {
+	<!-- id="check-button"을 누르면 click event -->
+	$("#check-button").click(function(){
+		console.log("click!!");
+	});
+});
+</script>
 </head>
 <body>
 	<div id="container">
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="user">
-
 				<form id="join-form" name="joinForm" method="post" action="${pageContext.request.contextPath }/user/join">
 					<!-- 데이터 입력 -->
 					<label class="block-label" for="name">이름</label>
@@ -21,7 +29,7 @@
 					<label class="block-label" for="email">이메일</label>
 					<input id="email" name="email" type="text" value="">
 					<!-- 이메일 중복 체크 -->
-					<input type="button" value="이메일 체크">
+					<input id="check-button" type="button" value="이메일 체크">
 					
 					<label class="block-label">비밀번호</label>
 					<input name="password" type="password" value="">

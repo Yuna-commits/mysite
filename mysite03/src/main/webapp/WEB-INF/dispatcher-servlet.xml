@@ -10,11 +10,31 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<!-- Spring MVC 컴포넌트 활성화 -->
 	<!-- validator, conversionService, messageConverter를 자동으로 등록 -->
 	<mvc:annotation-driven>
+		<!-- Message Converters -->
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html; charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			
+			<!-- Mapping Jackson Http Message Converter -->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json; charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
 		<!-- Argument Resolver 등록 -->
 		<mvc:argument-resolvers>
-			<bean class="com.bit2025.mysite.security.AuthUserHandlerMehtodArgumentResolver"/>
+			<bean class="com.bit2025.mysite.security.AuthUserHandlerMehtodArgumentResolver" />
 		</mvc:argument-resolvers>
 	</mvc:annotation-driven>
 
@@ -24,31 +44,33 @@
 	<!-- Interceptors -->
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/user/auth"/>
-			<bean class="com.bit2025.mysite.security.LoginInterceptor"/>
+			<mvc:mapping path="/user/auth" />
+			<bean class="com.bit2025.mysite.security.LoginInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
-			<mvc:mapping path="/user/logout"/>
-			<bean class="com.bit2025.mysite.security.LogoutInterceptor"/>
+			<mvc:mapping path="/user/logout" />
+			<bean class="com.bit2025.mysite.security.LogoutInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
-			<mvc:mapping path="/**"/>
+			<mvc:mapping path="/**" />
 			<!-- 인증이 필요없는 요청은 제외 -->
-			<mvc:exclude-mapping path="/assets/**"/>
-			<mvc:exclude-mapping path="/user/auth"/>
-			<mvc:exclude-mapping path="/user/logout"/>
-			<bean class="com.bit2025.mysite.security.AuthInterceptor"/>
-		</mvc:interceptor>	
+			<mvc:exclude-mapping path="/assets/**" />
+			<mvc:exclude-mapping path="/user/auth" />
+			<mvc:exclude-mapping path="/user/logout" />
+			<bean class="com.bit2025.mysite.security.AuthInterceptor" />
+		</mvc:interceptor>
 	</mvc:interceptors>
-	
+
+	<!-- applicationContext.xml에 등록된 Bean들의 Annotation 활성화 -->
 	<context:annotation-config />
-	<context:component-scan
-		base-package="com.bit2025.mysite.controller, com.bit2025.mysite.exception" />
+	
+	<!-- Component 패키지 지정 -->
+	<context:component-scan base-package="com.bit2025.mysite.controller, com.bit2025.mysite.exception" />
 
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	   <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-	   <property name="prefix" value="/WEB-INF/views/" />
-	   <property name="suffix" value=".jsp" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
 	</bean>
-	
+
 </beans>

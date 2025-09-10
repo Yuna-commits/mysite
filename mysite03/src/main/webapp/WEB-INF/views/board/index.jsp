@@ -75,7 +75,9 @@
 				</div>
 
 				<div class="bottom">
-					<a href='${pageContext.request.contextPath }/board/write?p=${map["page"].reqPage }&kwd=${map.keyword }' id="new-book">글쓰기</a>
+					<c:if test="${not empty authUser }">
+						<a href='${pageContext.request.contextPath }/board/write?p=${map["page"].reqPage }&kwd=${map.keyword }' id="new-book">글쓰기</a>
+					</c:if>
 				</div>
 			</div>
 		</div>
