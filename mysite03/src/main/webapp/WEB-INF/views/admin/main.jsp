@@ -24,16 +24,13 @@
 
 						<label class="block-label">프로필 이미지</label>
 						<img id="profile" src="${pageContext.request.contextPath }/${siteVo.profileURL }">
-						<input type="file" name="file1">
+						<input type="file" name="file">
 
 						<label class="block-label">사이트 설명</label>
 						<textarea name="description">${siteVo.description }</textarea>
 						
 						<input type="submit" value="변경" />
-					</form>
-									
-				
-
+					</form>					
 				</div>
 			</div>
 			<c:import url="/WEB-INF/views/admin/include/navigation.jsp">

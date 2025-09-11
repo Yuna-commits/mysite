@@ -61,16 +61,21 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 
-	<!-- applicationContext.xml에 등록된 Bean들의 Annotation 활성화 -->
-	<context:annotation-config />
-	
-	<!-- Component 패키지 지정 -->
-	<context:component-scan base-package="com.bit2025.mysite.controller, com.bit2025.mysite.exception" />
-
+	<!-- View Resolver -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+
+	<!-- mvc url-resource mapping -->
+	<mvc:resources mapping="/upload-images/**" location="file:/mysite-uploads/" ></mvc:resources>
+	<!-- Multipart Resolver -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
+		
+	<!-- applicationContext.xml에 등록된 Bean들의 Annotation 활성화 -->
+	<context:annotation-config />
+	<!-- Component 패키지 지정 -->
+	<context:component-scan base-package="com.bit2025.mysite.controller, com.bit2025.mysite.exception" />
 
 </beans>

@@ -22,7 +22,7 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping("/checkemail")
-	public Map checkEmail(@RequestParam(value = "email", required = true, defaultValue = "") String email) {
+	public Map<String, Object> checkEmail(@RequestParam(value = "email", required = true, defaultValue = "") String email) {
 		UserVo vo = userService.getUser(email);
 		
 		// UserVo == null이면 중복이 아닌 이메일, 사용 가능
