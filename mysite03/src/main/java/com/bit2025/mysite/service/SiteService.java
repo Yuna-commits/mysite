@@ -9,7 +9,7 @@ import com.bit2025.mysite.vo.SiteVo;
 public class SiteService {
 	
 	// site table의 하나의 행으로만 관리
-	public static final Long CONFIG_ID = 1L;
+	private static final Long CONFIG_ID = 1L;
 
 	private SiteRepository siteRepository;
 

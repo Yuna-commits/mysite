@@ -29,9 +29,6 @@ public class AdminController {
 
 	@RequestMapping({ "", "/" })
 	public String main(Model model) {
-		SiteVo siteVo = siteService.getSite();
-		model.addAttribute("siteVo", siteVo);
-
 		return "admin/main";
 	}
 
@@ -45,8 +42,7 @@ public class AdminController {
 			siteVo.setProfileURL(url);
 		} else { 
 			siteVo.setProfileURL(siteService.getSite().getProfileURL());
-		}
-			
+		}		
 		// form 입력 정보로 mysite 갱신
 		siteService.updateSite(siteVo);
 

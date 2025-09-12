@@ -1,8 +1,8 @@
 package com.bit2025.mysite.common;
 
 public class Page {
-	public final static int PAGE_SIZE = 5; // 한 페이지에 보일 페이지의 수
-	public final static int BOARD_SIZE = 5;// 한 페이지에 보일 게시글의 수
+	private final static int PAGE_SIZE = 5; // 한 페이지에 보일 페이지의 수
+	private final static int BOARD_SIZE = 5;// 한 페이지에 보일 게시글의 수
 	
 	private int reqPage; // 사용자 요청 페이지
 	private int totalBoard; //총 게시글 수

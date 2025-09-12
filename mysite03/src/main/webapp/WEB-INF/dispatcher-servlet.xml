@@ -41,7 +41,7 @@
 	<!-- 서블릿 컨테이너(Tomcat)의 Default Servlet 위임 핸들러 -->
 	<mvc:default-servlet-handler />
 
-	<!-- Interceptors -->
+	<!-- Security Interceptors -->
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/user/auth" />
@@ -58,6 +58,15 @@
 			<mvc:exclude-mapping path="/user/auth" />
 			<mvc:exclude-mapping path="/user/logout" />
 			<bean class="com.bit2025.mysite.security.AuthInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- Site Interceptor -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/assets/**"/>
+			<bean class="com.bit2025.mysite.interceptor.SiteInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
 
