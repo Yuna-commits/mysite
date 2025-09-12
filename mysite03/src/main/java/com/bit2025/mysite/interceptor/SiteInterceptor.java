@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SiteInterceptor implements HandlerInterceptor {
 	
 	private ServletContext servletContext;
+	
 	private SiteService siteService;
 
 	public SiteInterceptor(ServletContext servletContext, SiteService siteService) {

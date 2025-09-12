@@ -17,16 +17,12 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
-				
 					<c:if test="${not empty authUser }">
 						<img id="profile" src="${pageContext.request.contextPath }${siteVo.profileURL }" style="width:200px">
 						<h2>${siteVo.welcomeMessage }</h2>
 					</c:if>
-					
 					<p>
 						${fn:replace(siteVo.description, newLine, "<br>") }
-						<br><br>
-						<a href="${pageContext.request.contextPath }/guestbook">방명록</a>에 글 남기기<br>
 					</p>
 				</div>
 			</div>
