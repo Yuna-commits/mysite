@@ -1,4 +1,5 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script>
 	window.addEventListener("load", function() {
@@ -34,13 +35,13 @@
 	<ul>
 		<c:choose>
 			<c:when test="${not empty authUser }">
-				<li><a href="${pageContext.request.contextPath }/user/update">회원정보수정</a><li>
-				<li><a href="${pageContext.request.contextPath }/user/logout">로그아웃</a><li>
-				<li>${authUser.name }(${authUser.role })님 안녕하세요 ^^;</li>
+				<li><a href="${pageContext.request.contextPath }/user/update"><spring:message code="header.gnb.settings"/></a><li>
+				<li><a href="${pageContext.request.contextPath }/user/logout"><spring:message code="header.gnb.logout"/></a><li>
+				<li>${authUser.name }(${authUser.role })<spring:message code="header.gnb.greeting"/></li>
 			</c:when>
 			<c:otherwise>
-				<li><a href="${pageContext.request.contextPath }/user/login">로그인</a><li>
-				<li><a href="${pageContext.request.contextPath }/user/join">회원가입</a><li>
+				<li><a href="${pageContext.request.contextPath }/user/login"><spring:message code="header.gnb.login"/></a><li>
+				<li><a href="${pageContext.request.contextPath }/user/join"><spring:message code="header.gnb.join"/></a><li>
 			</c:otherwise>
 		</c:choose>
 	</ul>
