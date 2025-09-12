@@ -39,15 +39,12 @@ public class AdminController {
 	public String mainUpdate(
 			SiteVo siteVo, 
 			@RequestParam(value = "file") MultipartFile multipartFile) {
-
-		SiteVo beforeVo = siteService.getSite();
-		siteVo.setId(beforeVo.getId());
 		
 		String url = fileuploadService.restore(multipartFile);
 		if (url != null) {
 			siteVo.setProfileURL(url);
 		} else { 
-			siteVo.setProfileURL(beforeVo.getProfileURL());
+			siteVo.setProfileURL(siteService.getSite().getProfileURL());
 		}
 			
 		// form 입력 정보로 mysite 갱신
