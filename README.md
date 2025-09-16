@@ -1,6 +1,6 @@
 # mysite
 
-### mysite02
+## mysite02
 1. Packaging
    - war(Tomcat Deploy)
    - web.xml 기반 배포
@@ -21,7 +21,9 @@
 7. Serving Static Resources
    - Default Servlet 지원
 
-### mysite03
+---
+
+## mysite03
 1. Packaging
    - war(Tomcat Deploy)
    - web.xml 기반 배포 
@@ -52,7 +54,9 @@
    - 다국어 지원(i18n): Spring Message Source & CookieLocaleResolver
    - Measuring Execution Time: Spring Aspects
 
-### mysite04
+---
+
+## mysite04
 1. Packaging
    - war(Tomcat Deploy)
    - web.xml 기반 배포
@@ -78,7 +82,9 @@
 8. 기능
    - mysite03과 동일
 
-### mysite05
+---
+
+## mysite05
 1. Packaging
    - war(Tomcat Deploy)
    - Spring WebApplicationInitializer 기반 배포**
@@ -105,7 +111,9 @@
    - Exception Handling: NoHandlerFoundException 처리 추가 **
    - 이외 기능은 mysite04와 동일
 
-### mysite06
+---
+
+## mysite06
 1. Packaging
    - war(Tomcat Deploy)
    - Spring Boot Servlet Initializer 기반 배포**
@@ -133,7 +141,9 @@
 8. 기능
    - mysite05와 동일
 
-### mysite07
+---
+
+## mysite07
 1. Packaging
    - jar(Embeded Tomcat) **
 2. Framework
