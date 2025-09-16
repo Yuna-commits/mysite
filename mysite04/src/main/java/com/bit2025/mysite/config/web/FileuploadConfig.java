@@ -1,0 +1,41 @@
+package com.bit2025.mysite.config.web;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/**
+ * dispatcher-servlet.xml 기반 Bean 등록
+ * 1. mvc url-resource mapping
+ * 		-> @EnableWebMvc
+ * 		-> WebMvcConfigurer 인터페이스 구현으로 mvc 설정 가능
+ * 2. Multipart Resolver
+ */
+@Configuration
+@EnableWebMvc
+@PropertySource("classpath:com/bit2025/mysite/config/web/fileupload.properties")
+public class FileuploadConfig implements WebMvcConfigurer {
+
+	@Autowired
+	private Environment env;
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry
+			.addResourceHandler(env.getProperty("fileupload.resourceUrl") + "/**")
+			.addResourceLocations("file: " + env.getProperty("fileupload.uploadLocation") + "/");
+	}
+
+	@Bean
+	public MultipartResolver multipartResolver() {
+		return new StandardServletMultipartResolver();
+	}
+
+}

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * applicationContext.xml 기반 Bean 등록
  * 1. MyBatis SqlSessionFactory
  * 2. MyBatis SqlSessionTemplate
  */
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 public class MyBatisConfig {
 
 	@Bean
-	public SqlSessionFactory sqlSession(ApplicationContext applicationContext, DataSource dataSource) throws Exception {
+	public SqlSessionFactory sqlSessionFactory(ApplicationContext applicationContext, DataSource dataSource) throws Exception {
 		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
 		sqlSessionFactory.setDataSource(dataSource);
 		sqlSessionFactory.setConfigLocation(applicationContext.getResource("classpath:com/bit2025/mysite/config/app/mybatis/configuration.xml"));

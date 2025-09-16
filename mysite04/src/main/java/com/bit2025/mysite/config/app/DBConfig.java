@@ -22,9 +22,13 @@ import org.springframework.transaction.TransactionManager;
 @PropertySource("classpath:com/bit2025/mysite/config/app/jdbc.properties")
 public class DBConfig {
 
+	@Autowired
+	private Environment env;
+	
 	@Bean
-	public DataSource dataSource(Environment env) {
+	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
+		
 		dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty("jdbc.url"));
 		dataSource.setUsername(env.getProperty("jdbc.username"));

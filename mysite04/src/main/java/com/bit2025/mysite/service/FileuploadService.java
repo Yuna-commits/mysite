@@ -6,16 +6,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@PropertySource("classpath:com/bit2025/mysite/config/web/fileupload.properties")
 public class FileuploadService {
 	
-	// 업로드한 파일을 저장할 물리적 경로
-	private static final String SAVE_PATH = "/mysite-uploads";
-	// 웹에서 접근할 가상 경로
-	private static final String URL = "/upload-images";
+	private Environment env;
+	
+	public FileuploadService(Environment env) {
+		this.env = env;
+	}
+
 	/**
 	 * 업로드한 파일(MultipartFile)을 서버에 저장
 	 * -> 저장한 파일의 URL 반환
@@ -23,7 +28,7 @@ public class FileuploadService {
 	 */
 	public String restore(MultipartFile multipartFile) throws RuntimeException {
 		try {
-			File uploadDirectory = new File(SAVE_PATH);
+			File uploadDirectory = new File(env.getProperty("fileupload.uploadLocation"));
 
 			// 1. 디렉토리가 없으면 생성, 생성 실패 시 저장 불가
 			if (!uploadDirectory.exists() && !uploadDirectory.mkdirs()) {
@@ -43,12 +48,12 @@ public class FileuploadService {
 			
 			// 5. 파일 저장
 			byte[] data = multipartFile.getBytes();
-			OutputStream os = new FileOutputStream(SAVE_PATH + "/" +saveFilename);
+			OutputStream os = new FileOutputStream(env.getProperty("fileupload.uploadLocation") + "/" +saveFilename);
 			os.write(data);
 			os.close();
 
 			// 6. 클라이언트가 접근할 URL 반환
-			return URL + "/" + saveFilename;
+			return env.getProperty("fileupload.resourceUrl") + "/" + saveFilename;
 		} catch(IOException e) {
 			throw new RuntimeException();
 		}
