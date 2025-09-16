@@ -11,10 +11,11 @@ import com.bit2025.mysite.config.app.MyBatisConfig;
 
 /**
  * Config Hub
- * aop : auto proxy
- * Transaction AOP Proxy
- * Component Scan
- * AppConfig <----- (DBConfig + MyBatisConfig)
+ * 1. aop : auto proxy
+ * 2. Transaction AOP Proxy
+ * 3. Component Scan
+ * 			 	   import
+ * 4. AppConfig <---------- (DBConfig + MyBatisConfig)
  */
 @Configuration
 @EnableAspectJAutoProxy

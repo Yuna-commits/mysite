@@ -84,4 +84,14 @@ public class UserController {
 		return "redirect:/user/update";
 	}
 	
+	@RequestMapping("/auth")
+	public void auth() {
+
+	}
+
+	@RequestMapping("/logout")
+	public void logout() {
+
+	}
+
 }

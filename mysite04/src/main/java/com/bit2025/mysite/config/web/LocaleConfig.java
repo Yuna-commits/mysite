@@ -23,6 +23,7 @@ public class LocaleConfig {
 		return localeResolver;
 	}
 	
+	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 		messageSource.setBasename("com/bit2025/mysite/config/web/messages/message");
