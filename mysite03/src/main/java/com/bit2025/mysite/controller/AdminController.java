@@ -1,8 +1,8 @@
 package com.bit2025.mysite.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,15 +21,17 @@ import jakarta.servlet.ServletContext;
 public class AdminController {
 
 	private ServletContext servletContext;
+	private ApplicationContext applicationContext;
 
 	private FileuploadService fileuploadService;
 	private SiteService siteService;
 
-	public AdminController(ServletContext servletContext, SiteService siteService,
-			FileuploadService fileuploadService) {
+	public AdminController(ServletContext servletContext, ApplicationContext applicationContext,
+			SiteService siteService, FileuploadService fileuploadService) {
 		this.servletContext = servletContext;
 		this.siteService = siteService;
 		this.fileuploadService = fileuploadService;
+		this.applicationContext = applicationContext;
 	}
 
 	@RequestMapping({ "", "/" })
@@ -49,8 +51,14 @@ public class AdminController {
 		}	
 		// form 입력 정보로 mysite 갱신
 		siteService.updateSite(siteVo);
-		// update SiteVo bean in application context
+		
+		// update SiteVo bean in Servlet Context
 		servletContext.setAttribute("siteVo", siteVo);
+
+		// update SiteVo bean in Application Context
+		SiteVo site = applicationContext.getBean(SiteVo.class);
+		// siteVo -> site copy
+		BeanUtils.copyProperties(siteVo, site);
 
 		return "redirect:/admin";
 	}

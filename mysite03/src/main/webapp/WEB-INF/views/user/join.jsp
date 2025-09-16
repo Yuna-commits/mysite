@@ -14,7 +14,7 @@ $(function() {
 	<!-- id="check-button"을 누르면 click event -->
 	$("#check-button").click(function() {
 		var email = $("#email").val();
-		if(email != null) {
+		if(!email) {
 			return;
 		}
 		$.ajax({
@@ -60,12 +60,12 @@ $(function() {
 						</spring:hasBindErrors>
 					</p>
 					
+					<spring:message code="user.join.label.email.check" var="userJoinLabelEmailCheck"/>
 					<label class="block-label" for="email"><spring:message code="user.join.label.email" /></label>
 					<form:input path="email" />
 					<!-- 이메일 중복 체크 -->
-					<spring:message code="user.join.label.email.check" var="userJoinLabelCheck"/>
 					<img id="check-img" src="${pageContext.request.contextPath }/assets/images/check.png" style="vertical-align:bottom; width:24px; display: none;">
-					<input id="check-button" type="button" value="${userJoinLabelCheck }">
+					<input id="check-button" type="button" value="${userJoinLabelEmailCheck }">
 					<p style="padding: 0; text-align:left; color: #f00">
 						<form:errors path="email" />
 					</p>
@@ -76,12 +76,12 @@ $(function() {
 						<form:errors path="password" />
 					</p>
 					
-					<spring:message code="user.join.label.gender.female" var="userJoinLabelFemale"/>
-					<spring:message code="user.join.label.gender.male" var="userJoinLabelMale"/>
+					<spring:message code="user.join.label.gender.female" var="userJoinLabelGenderFemale"/>
+					<spring:message code="user.join.label.gender.male" var="userJoinLabelGenderMale"/>
 					<fieldset>
 						<legend><spring:message code="user.join.label.gender" /></legend>
-						<form:radiobutton path="gender" value="female" label="${userJoinLabelFemale }" checked="checked" />
-						<form:radiobutton path="gender" value="male" label="${userJoinLabelMale }" />
+						<form:radiobutton path="gender" value="female" label="${userJoinLabelGenderFemale }" checked="checked" />
+						<form:radiobutton path="gender" value="male" label="${userJoinLabelGenderMale }" />
 					</fieldset>
 					
 					<fieldset>
