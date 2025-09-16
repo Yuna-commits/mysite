@@ -21,8 +21,6 @@
 7. Serving Static Resources
    - Default Servlet 지원
 
----
-
 ## mysite03
 1. Packaging
    - war(Tomcat Deploy)
@@ -54,8 +52,6 @@
    - 다국어 지원(i18n): Spring Message Source & CookieLocaleResolver
    - Measuring Execution Time: Spring Aspects
 
----
-
 ## mysite04
 1. Packaging
    - war(Tomcat Deploy)
@@ -81,8 +77,6 @@
    - Default Servlet Handler: assets(images, css, js, etc..)
 8. 기능
    - mysite03과 동일
-
----
 
 ## mysite05
 1. Packaging
@@ -110,9 +104,7 @@
 8. 기능
    - Exception Handling: NoHandlerFoundException 처리 추가 **
    - 이외 기능은 mysite04와 동일
-
----
-
+   
 ## mysite06
 1. Packaging
    - war(Tomcat Deploy)
@@ -140,8 +132,6 @@
    - Default Servlet Handler: disable **
 8. 기능
    - mysite05와 동일
-
----
 
 ## mysite07
 1. Packaging
