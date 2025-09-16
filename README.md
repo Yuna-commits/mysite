@@ -8,7 +8,7 @@
    - 사용안함
 3. MVC
    - Model2(Servlet Programming)
-   - ActionServlet & Action: Factory Method Design Pattern 적용
+   - ActionServlet & Action: Factory Method Design Pattern 적용(x)
 4. Data Access
    - Repository(DAO) 구현: RAW JDBC API
    - Transaction: 지원안함
