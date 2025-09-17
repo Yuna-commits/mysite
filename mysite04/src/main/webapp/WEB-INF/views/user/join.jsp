@@ -22,14 +22,14 @@ $(function() {
 				type : "get",
 				dataType : "json",
 				success : function(response) {
+					console.log(response);
 					// 실패
 					if(response.result == "fail"){
 						console.error(response.message);
 						return;
 					}
-					
-					// 중복
-					if(responsedata) {
+					// 성공
+					if(response.data) {
 						alert("이메일이 존재합니다. 다른 이메일을 사용해 주세요.");
 						$("#email").val("");
 						$("#email").focus();

@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.bit2025.mysite.dto.JsonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,16 +34,7 @@ public class GlobalExceptionHandler {
 		// 2-1. JSON 요청: request header accept: application/json
 		if (accept.matches(".*application/json.*")) {
 			// JSON 응답 만들기 (MessageConvertor의 동작)
-			/**
-			 * 			=== response format ===
-			 * {
-			 * 		result: 	"fail"	or	"success"
-			 * 		data:		 null	or	  "..."
-			 * 		message:	"..."	or	   null
-			 * }
-			 */
-			Map<String, String> map = Map.of("result", "fail", "message", errors.toString());
-			String jsonString = new ObjectMapper().writeValueAsString(map);
+			String jsonString = new ObjectMapper().writeValueAsString(JsonResult.fail(errors.toString()));
 
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json; charset=utf-8");
