@@ -43,12 +43,13 @@ public class AdminController {
 	public String mainUpdate(SiteVo siteVo, @RequestParam(value = "file") MultipartFile multipartFile) {
 		String profileURL = fileuploadService.restore(multipartFile);
 
-		if (profileURL != null) {
-			siteVo.setProfileURL(profileURL);
-		} else {
-			// 이미지 등록을 안 하면 이전 이미지 유지
-			siteVo.setProfileURL(siteService.getSite().getProfileURL());
+		// 이미지 등록을 안 하면 이전 이미지 유지
+		if (profileURL == null) {
+			profileURL = siteService.getSite().getProfileURL();
 		}
+
+		siteVo.setProfileURL(profileURL);
+		
 		// form 입력 정보로 mysite 갱신
 		siteService.updateSite(siteVo);
 
