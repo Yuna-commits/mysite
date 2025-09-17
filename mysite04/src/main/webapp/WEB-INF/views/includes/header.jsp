@@ -37,7 +37,7 @@
 			<c:when test="${not empty authUser }">
 				<li><a href="${pageContext.request.contextPath }/user/update"><spring:message code="header.gnb.settings"/></a><li>
 				<li><a href="${pageContext.request.contextPath }/user/logout"><spring:message code="header.gnb.logout"/></a><li>
-				<li>${authUser.name }(${authUser.role })<spring:message code="header.gnb.greeting"/></li>
+				<li>${authUser.name }(${authUser.role }) <spring:message code="header.gnb.greeting"/></li>
 			</c:when>
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath }/user/login"><spring:message code="header.gnb.login"/></a><li>
