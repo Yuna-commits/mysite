@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="guestbook">
+	<insert id="insert" parameterType="guestbookvo">
+		<![CDATA[
+			insert 
+			into guestbook 
+			values(null, #{name}, password(#{password}), #{message}, now())
+		]]>
+		<selectKey keyProperty="id" resultType="Long" order="AFTER">
+			<![CDATA[
+				select last_insert_id() from dual
+			]]>
+		</selectKey>
+	</insert>
+
+	<delete id="deleteByIdAndPassword" parameterType="map">
+		<![CDATA[
+			delete 
+			from guestbook 
+			where id=#{id} and password=password(#{password})
+		]]>
+	</delete>
+
+	<select id="findAll" resultType="guestbookvo">
+		<![CDATA[
+			select id, name, message, 
+			       date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate
+			from guestbook 
+			order by reg_date desc
+		]]>
+	</select>
+</mapper>
