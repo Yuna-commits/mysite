@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>Servlet Context : Not Found</h1>
+	<h1>Application Context (MySite) :  Not Found</h1>
 	<p>
 		해당 요청을 찾을 수 없습니다.
 	</p>

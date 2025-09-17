@@ -84,6 +84,9 @@ public class BoardController {
 			@PathVariable("id") Long id, 
 			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage, 
 			@RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
+		// authUser.role == "ADMIN"
+		
+		// authUser.role == "USER"
 		boardService.deleteContents(id, authUser.getId());
 		
 		return "redirect:/board";
