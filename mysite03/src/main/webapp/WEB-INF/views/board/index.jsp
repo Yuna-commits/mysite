@@ -43,8 +43,8 @@
 							<td>${vo.userName }</td>
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
-							<!-- 게시글 작성자 == 로그인 사용자인 경우(글쓴이 본인)만 삭제 가능 -->
-							<td><c:if test="${not empty authUser && authUser.id == vo.userId }">
+							<!-- 관리자이거나 게시글 작성자 == 로그인 사용자인 경우(글쓴이 본인)만 삭제 가능 -->
+							<td><c:if test='${authUser.role == "ADMIN" || (not empty authUser && authUser.id == vo.userId) }'>
 									<a href='${pageContext.request.contextPath }/board/delete/${vo.id }?p=${map["page"].reqPage }&kwd=${map.keyword }'
 										class="del" style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>
 									</a>
