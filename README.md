@@ -128,8 +128,8 @@
    - Spring Secuirty
 7. Serving Static Resources
    - Spring Resource Handler: External Resources(files uploaded)
-   - `Spring Resource Handler: assets(images, css, js, etc..)`
-   - `Default Servlet Handler: disable`
+   - Spring Resource Handler: assets(images, css, js, etc..)
+   - Default Servlet Handler: disable
 8. 기능
    - mysite05와 동일
 
