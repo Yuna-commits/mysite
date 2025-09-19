@@ -1,6 +1,7 @@
 package com.bit2025.mysite.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bit2025.mysite.repository.UserRepository;
@@ -11,8 +12,16 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public void join(UserVo userVo) {
+		// password encoding
+		String password = userVo.getPassword();
+		String passwordEncoded = passwordEncoder.encode(password);
+		userVo.setPassword(passwordEncoded);
+		
 		userRepository.insert(userVo);
 	}
 
@@ -22,11 +31,12 @@ public class UserService {
 	}
 	
 	public UserVo getUser(String email) {
-		return userRepository.findByEmail(email);
+		// login, email check
+		return userRepository.findByEmail(email, UserVo.class);
 	}
 	
 	public UserVo getUser(String email, String password) {
-		// login
+		// login interceptor
 		return userRepository.findByEmailAndPassword(email, password);
 	}
 
