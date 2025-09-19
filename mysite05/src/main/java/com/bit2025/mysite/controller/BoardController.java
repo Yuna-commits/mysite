@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bit2025.mysite.security.Auth;
 import com.bit2025.mysite.security.AuthUser;
 import com.bit2025.mysite.service.BoardService;
 import com.bit2025.mysite.vo.BoardVo;
@@ -47,14 +46,12 @@ public class BoardController {
 	}
 
 	// writeform
-	@Auth
 	@RequestMapping(value = "/write", method = RequestMethod.GET)
 	public String write() {
 		// @Auth로 Access Control
 		return "board/write";
 	}
 	
-	@Auth
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
 	public String write(
 			@AuthUser UserVo authUser,
@@ -68,7 +65,6 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
-	@Auth
 	@RequestMapping(value = "/reply/{id}", method = RequestMethod.GET)
 	public String reply(@PathVariable("id") Long id, Model model) {
 		BoardVo boardVo = boardService.getContents(id);
@@ -77,7 +73,6 @@ public class BoardController {
 		return "/board/reply";
 	}
 	
-	@Auth
 	@RequestMapping("/delete/{id}")
 	public String delete(
 			@AuthUser UserVo authUser, 
@@ -90,7 +85,6 @@ public class BoardController {
 	}
 	
 	// modifyform
-	@Auth
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
 	public String modify(@PathVariable("id") Long id, @AuthUser UserVo authUser, Model model) {
 		BoardVo boardVo = boardService.getContents(id, authUser.getId());
@@ -99,7 +93,6 @@ public class BoardController {
 		return "/board/modify";
 	}
 
-	@Auth
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.POST)
 	public String modify(
 			BoardVo boardVo,
