@@ -68,6 +68,11 @@ public class SecurityConfig {
 						
 					});
 			})
+			.logout(configurer -> {
+				configurer
+					.logoutUrl("/user/logout")
+					.logoutSuccessUrl("/");
+			})
 			.authorizeHttpRequests(registry -> {
 				// Access Control List
 				registry
