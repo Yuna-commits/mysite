@@ -33,8 +33,4 @@ public class UserRepository {
 		return new ObjectMapper().convertValue(map, resultType);
 	}
 
-	public UserVo findByEmailAndPassword(String email, String password) {
-		return sqlSession.selectOne("user.findByEmailAndPassword", Map.of("email", email, "password", password));
-	}
-
 }

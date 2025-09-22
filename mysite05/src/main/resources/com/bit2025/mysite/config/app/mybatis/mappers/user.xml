@@ -50,11 +50,4 @@
 		]]>
 	</select>
 
-	<select id="findByEmailAndPassword" parameterType="map" resultType="uservo">
-		<![CDATA[
-			select id, name, role 
-			from user 
-			where email = #{email} and password = password(#{password})
-		]]>
-	</select>
 </mapper>

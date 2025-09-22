@@ -35,11 +35,6 @@ public class UserService {
 		return userRepository.findByEmail(email, UserVo.class);
 	}
 	
-	public UserVo getUser(String email, String password) {
-		// login interceptor
-		return userRepository.findByEmailAndPassword(email, password);
-	}
-
 	public void updateUser(UserVo userVo) {
 		userRepository.update(userVo);
 	}
