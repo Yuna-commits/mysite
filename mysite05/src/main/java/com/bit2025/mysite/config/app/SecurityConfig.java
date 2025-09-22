@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
@@ -81,6 +83,18 @@ public class SecurityConfig {
 					.requestMatchers(new RegexRequestMatcher("^/user/update$", null)).hasAnyRole("ADMIN", "USER")
 					.requestMatchers(new RegexRequestMatcher("^/board/?(write|delete|modify|reply).*$", null)).hasAnyRole("ADMIN", "USER")
 					.anyRequest().permitAll();
+			})
+			.exceptionHandling(configurer -> {
+				configurer.accessDeniedHandler(new AccessDeniedHandler() {
+
+					@Override
+					public void handle(HttpServletRequest request, HttpServletResponse response,
+							AccessDeniedException accessDeniedException) throws IOException, ServletException {
+						// 예외 발생 시, 메인으로 리다이렉트
+						response.sendRedirect(request.getContextPath());
+					}
+					
+				});
 			});
 		
 		return http.build();
