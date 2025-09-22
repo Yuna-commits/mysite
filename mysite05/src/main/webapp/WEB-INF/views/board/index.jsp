@@ -1,5 +1,6 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn"%>  
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -44,11 +45,21 @@
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
 							<!-- 게시글 작성자 == 로그인 사용자인 경우(글쓴이 본인)만 삭제 가능 -->
-							<td><c:if test='${not empty authUser && authUser.id == vo.userId }'>
-									<a href='${pageContext.request.contextPath }/board/delete/${vo.id }?p=${map["page"].reqPage }&kwd=${map.keyword }'
-										class="del" style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>
-									</a>
-							</c:if></td>
+							<td>
+								<sec:authorize access="isAuthenticated()">
+									<sec:authentication property="principal" var="authUser" />
+									<c:choose>
+										<c:when test='${authUser.id == vo.userId }'>
+											<a href='${pageContext.request.contextPath }/board/delete/${vo.id }?p=${map["page"].reqPage }&kwd=${map.keyword }'
+												class="del" style='background:url("${pageContext.request.contextPath }/assets/images/recycle.png") no-repeat 0 0'>
+											</a>
+										</c:when>
+										<c:otherwise>
+											&nbsp;
+										</c:otherwise>
+									</c:choose>
+								</sec:authorize>
+							</td>
 						</tr>
 						<c:set var="index" value="${index - 1 }"></c:set>
 					</c:forEach>
@@ -75,9 +86,9 @@
 				</div>
 
 				<div class="bottom">
-					<c:if test="${not empty authUser }">
+					<sec:authorize access="isAuthenticated()">
 						<a href='${pageContext.request.contextPath }/board/write?p=${map["page"].reqPage }&kwd=${map.keyword }' id="new-book">글쓰기</a>
-					</c:if>
+					</sec:authorize>
 				</div>
 			</div>
 		</div>

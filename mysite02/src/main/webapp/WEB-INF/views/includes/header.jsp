@@ -1,7 +1,7 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="header">
-	<h1>MySite</h1>
+	<h1>MySite - ${test01 } - ${test02 }</h1>
 	<ul>
 		<c:choose>
 			<c:when test='${not empty authUser }'>

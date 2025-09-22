@@ -1,6 +1,7 @@
 package com.bit2025.mysite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.bit2025.mysite.security.AuthUser;
 import com.bit2025.mysite.service.UserService;
 import com.bit2025.mysite.vo.UserVo;
 
@@ -47,17 +47,32 @@ public class UserController {
 		return "user/joinsuccess";
 	}
 
-	// loginform
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	@RequestMapping("/login")
 	public String login() {
 		return "user/login";
 	}
 	
 	// updateform
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
-	public String update(@AuthUser UserVo authUser, Model model) {
-		// @Auth으로 Access Control
-		// AuthUserHandlerMehtodArgumentResolver로 @AuthUser이면 authUser 정보 가져옴
+	public String update(/* HttpSession session */ Authentication authentication, Model model) {
+		// 1. HttpSession을 사용하는 방법 -> 기술침투 문제
+		// SecurityContext securityContext = (SecurityContext) session
+		// 		.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		// Authentication authentication = securityContext.getAuthentication();
+		// UserVo authUser = (UserVo) authentication.getPrincipal();
+
+		// 2. SecurityContextHolder(Spring Security ThreadLocal Helper)
+		//		-> Holder는 TheadLocal로 현재 스레드의 Security Context 관리
+		// 		-> HttpSession 사용 x, 기술침투 해결
+		// SecurityContext securityContext = SecurityContextHolder.getContext();
+		// Authentication authentication = securityContext.getAuthentication();
+		// UserVo authUser = (UserVo) authentication.getPrincipal();
+		
+		// 3. Spring Security ArgumentResolver 사용
+		//		-> @AuthenticationPrincipal로 authentication 객체를 컨트롤러 메서드에 직접 주입
+		//		-> HttpSession, SecurityContextHolder 사용 x
+		UserVo authUser = (UserVo) authentication.getPrincipal();
+		
 		Long id = authUser.getId();
 		UserVo userVo = userService.getUser(id);
 
@@ -71,7 +86,9 @@ public class UserController {
 	 * userVo : form에 입력된 사용자 정보
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@AuthUser UserVo authUser, UserVo userVo) {
+	public String update(Authentication authentication, UserVo userVo) {
+		UserVo authUser = (UserVo) authentication.getPrincipal();
+		
 		userVo.setId(authUser.getId());
 		userService.updateUser(userVo);
 

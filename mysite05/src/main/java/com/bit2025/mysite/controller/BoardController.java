@@ -3,6 +3,7 @@ package com.bit2025.mysite.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bit2025.mysite.security.AuthUser;
 import com.bit2025.mysite.service.BoardService;
 import com.bit2025.mysite.vo.BoardVo;
 import com.bit2025.mysite.vo.UserVo;
@@ -54,11 +54,12 @@ public class BoardController {
 	
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
 	public String write(
-			@AuthUser UserVo authUser,
+			Authentication authentication,
 			@ModelAttribute BoardVo boardVo,
 			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage,
 			@RequestParam(value = "kwd", required = true, defaultValue = "") String keyword) {
-
+		UserVo authUser = (UserVo) authentication.getPrincipal();
+		
 		boardVo.setUserId(authUser.getId());
 		boardService.addContents(boardVo);
 		
@@ -75,10 +76,12 @@ public class BoardController {
 	
 	@RequestMapping("/delete/{id}")
 	public String delete(
-			@AuthUser UserVo authUser, 
+			Authentication authentication, 
 			@PathVariable("id") Long id, 
 			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage, 
 			@RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
+		UserVo authUser = (UserVo) authentication.getPrincipal();
+		
 		boardService.deleteContents(id, authUser.getId());
 		
 		return "redirect:/board";
@@ -86,7 +89,9 @@ public class BoardController {
 	
 	// modifyform
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
-	public String modify(@PathVariable("id") Long id, @AuthUser UserVo authUser, Model model) {
+	public String modify(@PathVariable("id") Long id,Authentication authentication, Model model) {
+		UserVo authUser = (UserVo) authentication.getPrincipal();
+		
 		BoardVo boardVo = boardService.getContents(id, authUser.getId());
 		model.addAttribute("boardVo", boardVo);
 		
@@ -96,9 +101,11 @@ public class BoardController {
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.POST)
 	public String modify(
 			BoardVo boardVo,
-			@AuthUser UserVo authUser,
+			Authentication authentication,
 			@RequestParam(value = "p", required = true, defaultValue = "1") Integer reqPage, 
 			@RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
+		UserVo authUser = (UserVo) authentication.getPrincipal();
+		
 		boardVo.setUserId(authUser.getId());
 		boardService.modifyContents(boardVo);
 

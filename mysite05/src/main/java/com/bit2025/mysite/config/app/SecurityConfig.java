@@ -1,5 +1,7 @@
 package com.bit2025.mysite.config.app;
 
+import java.io.IOException;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,15 +10,21 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 import com.bit2025.mysite.repository.UserRepository;
 import com.bit2025.mysite.security.UserDetailsServiceImpl;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +39,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(csrf -> csrf.disable())
+			// 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
 			.formLogin(configurer -> {
 				configurer
 					// 사용자 정의 로그인 페이지 사용
@@ -41,7 +50,23 @@ public class SecurityConfig {
 					.usernameParameter("email")
 					.passwordParameter("password")
 					// 성공 시 메인으로 리다이렉트
-					.defaultSuccessUrl("/");
+					.defaultSuccessUrl("/")
+					// 파라미터와 함께 리다이렉트 응답하는 방식
+					// .failureUrl("/user/login?result=fail")
+					// email 표시를 위해 핸들링
+					.failureHandler(new AuthenticationFailureHandler() {
+
+						@Override
+						public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+								AuthenticationException exception) throws IOException, ServletException {
+							request.setAttribute("email", request.getParameter("email"));
+							request
+								// 현 위치가 필터이기 때문에 DispatcherServlet으로 포워딩(jsp x)
+								.getRequestDispatcher("/user/login")
+								.forward(request, response);
+						}
+						
+					});
 			})
 			.authorizeHttpRequests(registry -> {
 				// Access Control List

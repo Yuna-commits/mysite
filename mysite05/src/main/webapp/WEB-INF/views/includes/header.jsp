@@ -1,5 +1,6 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script>
 	window.addEventListener("load", function() {
@@ -33,16 +34,15 @@
 		</c:choose>
 	</div>
 	<ul>
-		<c:choose>
-			<c:when test="${not empty authUser }">
-				<li><a href="${pageContext.request.contextPath }/user/update"><spring:message code="header.gnb.settings"/></a><li>
-				<li><a href="${pageContext.request.contextPath }/user/logout"><spring:message code="header.gnb.logout"/></a><li>
-				<li>${authUser.name }(${authUser.role }) <spring:message code="header.gnb.greeting"/></li>
-			</c:when>
-			<c:otherwise>
-				<li><a href="${pageContext.request.contextPath }/user/login"><spring:message code="header.gnb.login"/></a><li>
-				<li><a href="${pageContext.request.contextPath }/user/join"><spring:message code="header.gnb.join"/></a><li>
-			</c:otherwise>
-		</c:choose>
+		<sec:authorize access="!isAuthenticated()">
+			<li><a href="${pageContext.request.contextPath }/user/login"><spring:message code="header.gnb.login"/></a><li>
+			<li><a href="${pageContext.request.contextPath }/user/join"><spring:message code="header.gnb.join"/></a><li>
+		</sec:authorize>
+		<sec:authorize access="isAuthenticated()">
+			<sec:authentication property="principal" var="authUser"/>
+			<li><a href="${pageContext.request.contextPath }/user/update"><spring:message code="header.gnb.settings"/></a><li>
+			<li><a href="${pageContext.request.contextPath }/user/logout"><spring:message code="header.gnb.logout"/></a><li>
+			<li>${authUser.name }(${authUser.role }) <spring:message code="header.gnb.greeting"/></li>
+		</sec:authorize>
 	</ul>
 </div>
