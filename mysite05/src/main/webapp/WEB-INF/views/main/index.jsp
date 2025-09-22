@@ -1,5 +1,6 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn"%>  
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%pageContext.setAttribute("newLine", "\n"); %>
 <!DOCTYPE html>
@@ -17,10 +18,10 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
-					<c:if test="${not empty authUser }">
+					<sec:authorize access="isAuthenticated()">
 						<img id="profile" src="${pageContext.request.contextPath }${siteVo.profileURL }" style="width:200px">
 						<h2>${siteVo.welcomeMessage }</h2>
-					</c:if>
+					</sec:authorize>
 					<p>
 						${fn:replace(siteVo.description, newLine, "<br>") }
 					</p>
