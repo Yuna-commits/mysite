@@ -53,7 +53,7 @@ public class SecurityConfig {
 					.defaultSuccessUrl("/")
 					// 파라미터와 함께 리다이렉트 응답하는 방식
 					// .failureUrl("/user/login?result=fail")
-					// email 표시를 위해 핸들링
+					// email 표시를 위해 로그인 실패 핸들링
 					.failureHandler(new AuthenticationFailureHandler() {
 
 						@Override
@@ -77,9 +77,9 @@ public class SecurityConfig {
 				// Access Control List
 				registry
 					// 권한이 필요한 페이지 등록
-					.requestMatchers(new RegexRequestMatcher("^/admin/?.*", null)).authenticated()
-					.requestMatchers(new RegexRequestMatcher("^/user/update$", null)).authenticated()
-					.requestMatchers(new RegexRequestMatcher("^/board/?(write|delete|modify|reply).*$", null)).authenticated()
+					.requestMatchers(new RegexRequestMatcher("^/admin/?.*", null)).hasRole("ADMIN")
+					.requestMatchers(new RegexRequestMatcher("^/user/update$", null)).hasAnyRole("ADMIN", "USER")
+					.requestMatchers(new RegexRequestMatcher("^/board/?(write|delete|modify|reply).*$", null)).hasAnyRole("ADMIN", "USER")
 					.anyRequest().permitAll();
 			});
 		

@@ -44,3 +44,5 @@
 
 7.  ACL 추가 작업~~
 
+8. Exception Handling 처리
+   ex) Access Denied (403 - Forbidden)
