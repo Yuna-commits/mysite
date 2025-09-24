@@ -1,0 +1,58 @@
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn"%>  
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%pageContext.setAttribute("newLine", "\n"); %>
+<!DOCTYPE html>
+<html>
+<head>
+<title>mysite</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link href="${pageContext.request.contextPath }/assets/css/board.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="container">
+		<c:import url="/WEB-INF/views/includes/header.jsp" />
+		<div id="content">
+			<div id="board" class="board-form">
+				<table class="tbl-ex">
+					<tr>
+						<th colspan="4">글보기</th>
+					</tr>
+					<tr>
+						<td class="label">제목</td>
+						<td>${boardVo.title }</td>
+					</tr>
+					<tr>
+						<td class="label">글쓴이</td>
+						<td>${boardVo.userName }</td>
+						<td class="label">조회수</td>
+						<td>${boardVo.hit }</td>
+					</tr>
+					<tr>
+						<td class="label">내용</td>
+						<td>
+							<div class="view-content">
+								${fn:replace(boardVo.contents, newLine, "<br>") }
+							</div>
+						</td>
+					</tr>
+				</table>
+				
+				<div class="bottom">
+					<sec:authorize access="isAuthenticated()">
+						<sec:authentication property="principal" var="authUser" />
+						<c:if test="${authUser.id == boardVo.userId }">
+							<a href="${pageContext.request.contextPath }/board/modify/${boardVo.id }?p=${param.p }&kwd=${param.kwd }">글수정</a>
+						</c:if>
+						<a href="${pageContext.request.contextPath }/board/reply/${boardVo.id }?p=${param.p }&kwd=${param.kwd }">답글달기</a>
+					</sec:authorize>
+					<a href="${pageContext.request.contextPath }/board?p=${param.p }&kwd=${param.kwd }">글목록</a>
+				</div>
+			</div>
+		</div>
+		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
+		<c:import url="/WEB-INF/views/includes/footer.jsp" />
+	</div>
+</body>
+</html>
