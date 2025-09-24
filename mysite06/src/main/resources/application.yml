@@ -15,11 +15,30 @@ spring:
       proxy-target-class: true
 
    mvc:
-      view:
-         prefix: /WEB-INF/views/
-         suffix: .jsp
+      static-path-pattern: /assets/**
+   #   view:
+   #      prefix: /WEB-INF/views/
+   #      suffix: .jsp
 
-   # mariadb jdbc
+   # resource handler mapping
+   web:
+      resources:
+         static-locations: [classpath:assets/, file:/mysite-uploads]
+
+   # servlet
+   servlet:
+      multipart:
+         enabled: true
+         max-file-size: 10485760
+         max-request-size: 104857600
+         file-size-threshold: 5242880
+
+   # message resource(i18n)
+   messages:
+      basename: messages/message
+      encoding: utf-8
+
+   # datasource(connection pool)
    datasource:
       driver-class-name: org.mariadb.jdbc.Driver
       url: jdbc:mariadb://192.168.0.181:3306/webdb
@@ -31,7 +50,7 @@ spring:
 
 # mybatis
 mybatis:
-   configuration-location: classpath:mybatis/configuration.xml
+   config-location: classpath:mybatis/configuration.xml
 
 # server configuration
 server:
