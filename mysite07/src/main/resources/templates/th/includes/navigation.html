@@ -1,6 +1,12 @@
 <div id="navigation">
 	<ul>
-		
+		<li>
+			<th:block sec:authorize="isAuthenticated()">
+				<th:block sec:authorize='hasRole("ADMIN")'>
+					<a th:href="@{/admin}" th:text=#{navigation.li.admin}></a>
+				</th:block>
+			</th:block>
+		</li>
 		<li>
 			<a th:href="@{/}" th:text="#{navigation.li.main}"></a>
 		</li>

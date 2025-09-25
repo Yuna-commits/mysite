@@ -19,5 +19,26 @@
 </script>
 <div id="header">
 	<h1 th:text='${@site.title }'></h1>
-	
+	<div id="languages">
+		<th:block th:if='${lang == "ko"}'>
+			<a href="" data-lang="ko" class="active">KO</a><a href="" data-lang="en">EN</a>
+		</th:block>
+		<th:block th:unless='${lang == "ko"}'>
+			<a href="" data-lang="ko">KO</a><a href="" data-lang="en" class="active">EN</a>
+		</th:block>
+	</div>
+	<ul>
+		<th:block sec:authorize="!isAuthenticated()">
+			<li><a th:href="@{/user/login}" th:text=#{header.gnb.login}></a></li>
+			<li><a th:href="@{/user/join}" th:text=#{header.gnb.join}></a></li>
+		</th:block>
+		<th:block sec:authorize="isAuthenticated()">
+			<li><a th:href="@{/user/update}" th:text=#{header.gnb.settings}></a></li>
+			<li><a th:href="@{/user/logout}" th:text=#{header.gnb.logout}></a></li>
+			<li>
+				<th:block sec:authentication="principal.name"></th:block>
+				<th:block th:text=#{header.gnb.greeting}></th:block>
+			</li>
+		</th:block>
+	</ul>
 </div>

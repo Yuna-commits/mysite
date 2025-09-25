@@ -15,7 +15,7 @@
 						<img id="profile" th:src='@{(${servletContext.getAttribute("siteVo").profileURL})}' style="width:200px">
 						<h2 th:text='${servletContext.getAttribute("siteVo").welcomeMessage }'></h2>
 					</th:block>
-					<p th:text='${#strings.replace(servletContext.getAttribute("siteVo").description, "\n", "<br>") }'/>
+					<p th:text='${servletContext.getAttribute("siteVo").description}' style="white-space:pre-line"/>
 				</div>
 			</div>
 		</div>
