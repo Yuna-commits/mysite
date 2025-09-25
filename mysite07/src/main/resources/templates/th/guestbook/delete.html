@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>mysite</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link th:href="@{/assets/css/guestbook.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="container">
+		<th:block th:include="th/includes/header"></th:block>
+		<div id="content">
+			<div id="guestbook" class="delete-form">
+				<form method="post" th:action="@{(|/guestbook/delete/${id }|)}">
+					<!-- 데이터 입력 -->
+					<label>비밀번호</label>
+					<input type="password" name="password">
+					<input type="submit" value="확인">
+				</form>
+				<a th:href="@{/guestbook}">방명록 리스트</a>
+			</div>
+		</div>
+		<th:block th:include="th/includes/navigation"></th:block>
+		<th:block th:include="th/includes/footer"></th:block>
+	</div>
+</body>
+</html>

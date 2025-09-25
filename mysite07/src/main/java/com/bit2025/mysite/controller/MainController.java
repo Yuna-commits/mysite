@@ -21,8 +21,4 @@ public class MainController {
 		return "th/main/index";
 	}
 
-	@RequestMapping("/th")
-	public String thymeleaf() {
-		return "th/main/hello";
-	}
 }
