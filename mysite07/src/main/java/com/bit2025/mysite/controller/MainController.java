@@ -1,14 +1,28 @@
 package com.bit2025.mysite.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import jakarta.servlet.ServletContext;
 
 @Controller
 public class MainController {
 
-	@RequestMapping({ "/", "/main" })
-	public String index() {
-		return "main/index";
+	private ServletContext servletContext;
+
+	public MainController(ServletContext servletContext) {
+		this.servletContext = servletContext;
 	}
 
+	@RequestMapping({ "/", "/main" })
+	public String index(Model model) {
+		model.addAttribute("servletContext", servletContext);
+		return "th/main/index";
+	}
+
+	@RequestMapping("/th")
+	public String thymeleaf() {
+		return "th/main/hello";
+	}
 }

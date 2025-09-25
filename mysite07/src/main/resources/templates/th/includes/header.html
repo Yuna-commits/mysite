@@ -1,0 +1,23 @@
+<script>
+	window.addEventListener("load", function() {
+		var anchors = document.querySelectorAll('#languages a');
+		anchors.forEach(function(element) {
+			// click event
+			element.addEventListener("click", function(event) {
+				// 기본 핸들러의 기능(link to href) 막기
+				event.preventDefault();
+				// "data-lang"을 쿠키에 저장
+				document.cookie = 
+					"lang=" + this.getAttribute("data-lang") + ";" +
+					"path=" + "[[@{/}]]" + ";" +
+					"max-age=" + (30*24*60*60);
+					
+				location.reload();
+			});
+		});
+	});
+</script>
+<div id="header">
+	<h1 th:text='${@site.title }'></h1>
+	
+</div>

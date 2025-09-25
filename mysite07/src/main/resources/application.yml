@@ -14,8 +14,18 @@ spring:
       auto: true
       proxy-target-class: true
 
+   thymeleaf:
+      check-template-location: true
+      mode: HTML
+      prefix: classpath:templates/
+      suffix: .html
+      encoding: UTF-8
+      view-names: th/*
+      cache: false
+ 
    mvc:
       static-path-pattern: /assets/**
+   # Java Config로 대체
    #   view:
    #      prefix: /WEB-INF/views/
    #      suffix: .jsp

@@ -11,7 +11,7 @@
 	<groupId>com.bit2025</groupId>
 	<artifactId>mysite07</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	
 	<properties>
 		<java.version>21</java.version>
 	</properties>
@@ -28,13 +28,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<!-- springboot thymeleaf starter -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
 
 		<!-- springboot aop starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
-		
+
 		<!-- springboot security starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -45,7 +55,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 		</dependency>
-		
+
 		<!-- springboot validation starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
