@@ -24,32 +24,29 @@ public class UserController {
 	// joinform
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String join(@ModelAttribute UserVo userVo) {
-		return "user/join";
+		return "th/user/join";
 	}
 
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	public String join(@ModelAttribute @Valid UserVo userVo, BindingResult result, Model model) {
 		if(result.hasErrors()) {
-			//List<ObjectError> errors = result.getAllErrors();
-			//for(ObjectError error: errors) {
-			//	System.out.println(error);
-			//}
 			model.addAllAttributes(result.getModel());
-			
-			return "user/join";
+			return "th/user/join";
 		}
+		
 		userService.join(userVo);
+		
 		return "redirect:/user/joinsuccess";
 	}
 
 	@RequestMapping("/joinsuccess")
 	public String joinsuccess() {
-		return "user/joinsuccess";
+		return "th/user/joinsuccess";
 	}
 
 	@RequestMapping("/login")
 	public String login() {
-		return "user/login";
+		return "th/user/login";
 	}
 	
 	// updateform
@@ -78,7 +75,7 @@ public class UserController {
 
 		model.addAttribute("userVo", userVo);
 
-		return "user/update";
+		return "th/user/update";
 	}
 	
 	/**
