@@ -15,15 +15,15 @@
 					<input type="text" id="name" th:field="*{name}">
 					
 					<label class="block-label" for="email" th:text="#{user.join.label.email}"></label>
-					<h4 th:text="*{email}"></h4>
+					<input type="text" id="email" th:field="*{email}" readonly="readonly">
 					
 					<label class="block-label" th:text="#{user.join.label.password}"></label>
 					<input type="password" name="password" value="">
 					
 					<fieldset>
 						<legend th:text="#{user.join.label.gender}"></legend>
-						<label th:text="#{user.join.label.gender.male}"></label> <input type="radio" name="gender" value="male" th:checked='*{gender == "Male"}'>						
-						<label th:text="#{user.join.label.gender.female}"></label> <input type="radio" name="gender" value="female" th:checked='*{gender == "Female"}'>
+						<label th:text="#{user.join.label.gender.male}"></label> <input type="radio" name="gender" value="Male" th:checked='*{gender == "Male"}'>						
+						<label th:text="#{user.join.label.gender.female}"></label> <input type="radio" name="gender" value="Female" th:checked='*{gender == "Female"}'>
 					</fieldset>
 					<input type="submit" value="수정하기">
 				</form>
